@@ -126,10 +126,10 @@ function SignInForm() {
           />
         </DialogContent>
         <DialogActions>
-          <Button color="primary" variant="contained" onClick={closeForgotPassword}>
+          <Button class="button-cancel-email" variant="contained" onClick={closeForgotPassword}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={handleForgotPassword}>
+          <Button class="button-confirm-email" variant="contained" onClick={handleForgotPassword}>
             Confirm
           </Button>
         </DialogActions>

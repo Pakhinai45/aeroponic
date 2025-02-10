@@ -133,7 +133,7 @@ function SignUpForm() {
           <Typography>Email: {formData.email}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button class="button-cancel-email" color="primary" variant="contained" onClick={closeConfirmSingup}>
+          <Button class="button-cancel-email"  variant="contained" onClick={closeConfirmSingup}>
             Cancel
           </Button>
           <Button class="button-confirm-email" variant="contained" onClick={handleConfirm}>
