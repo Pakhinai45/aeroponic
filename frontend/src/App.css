@@ -1,0 +1,75 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.Navbar {
+  background-color: #343a40;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.5rem;
+  position: fixed; /* ให้ Navbar อยู่ที่เดิมแม้เมื่อเลื่อนหน้าเว็บ */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* ให้ Navbar อยู่ด้านบนสุด */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เพิ่มเงาใต้ Navbar */
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  margin-top: 80px; /* เพิ่มช่องว่างให้เนื้อหาหลักไม่ทับกับ Navbar */
+  position: relative;
+}
+
+.Sidebar {
+  background-color: #222;
+  width: 250px;
+  padding: 20px;
+  color: white;
+  position: fixed; /* ให้ Sidebar คงที่ */
+  height: 100%;
+  top: 80px; /* ให้ Sidebar เริ่มจากใต้ Navbar */
+  left: 0;
+  z-index: 1; /* ให้ Sidebar อยู่ด้านล่างของ content */
+}
+
+.Sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.Sidebar li {
+  margin-bottom: 10px;
+}
+
+.content-area {
+  margin-left: 250px; /* ให้เนื้อหาหลักไม่ทับกับ Sidebar */
+  flex: 1;
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  position: relative;
+  z-index: 2; /* ให้เนื้อหาหลักอยู่ด้านบนของ Sidebar */
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+    margin-top: 60px; /* ให้มีช่องว่างให้เหมาะสมบนมือถือ */
+  }
+
+  .Sidebar {
+    width: 100%;
+    position: relative; /* ใช้ position relative บนอุปกรณ์มือถือ */
+    height: auto;
+  }
+
+  .content-area {
+    margin-left: 0;
+    margin-top: 20px;
+  }
+}

@@ -1,0 +1,68 @@
+/* RoomTemperature.css */
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    padding: 20px;
+    width: 250px;
+    background-color: #f8f8f8;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .info {
+    text-align: left;
+  }
+  
+  .label {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 5px;
+  }
+  
+  .temperature {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    line-height: 1.5;
+  }
+  
+  .celsius {
+    color: #333;
+  }
+  
+  .fahrenheit {
+    color: #666;
+    font-size: 16px;
+  }
+  
+  .iconContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 100px;
+    background-color: #ffdede;
+    border-radius: 25px;
+    position: relative;
+  }
+  
+  .thermometerIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 50%;
+    background-color: #f56b6b;
+    border-radius: 25px;
+    position: absolute;
+    bottom: 0;
+  }
+  
+  .icon {
+    font-size: 20px;
+    color: #fff;
+  }
+  

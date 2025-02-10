@@ -1,0 +1,44 @@
+/* Style สำหรับ Navbar */
+.navbar {
+    background-color: #F3F9F9;
+    padding: 10px 20px;
+    left: 0;
+    top: 0;
+    width: 100%;      /* ให้ขยายไปเต็มหน้าจอ */
+    z-index: 1000;    /* ให้อยู่ด้านบนสุดของส่วนอื่น ๆ */
+    box-sizing: border-box; /* จัดการพื้นที่ padding */
+   
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.navbar-links {
+    list-style: none;
+    display: flex;
+}
+
+.navbar-item {
+    margin-left: 15px;
+}
+
+.navbar-link {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+.navbar-link:hover {
+    color: #f39c12;
+}

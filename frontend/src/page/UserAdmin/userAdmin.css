@@ -1,0 +1,42 @@
+.grid-useradmin {
+    display: grid;
+    grid-template-columns: 200px 1fr; /* Sidebar 200px, Content 1fr */
+    grid-template-rows: auto 1fr; /* Auto height สำหรับ Navbar, Content ขยายที่เหลือ */
+    height: 100vh; /* ความสูงเต็มหน้าจอ */
+    background-color: #F3F9F9;
+  }
+  
+  .sidebar-contrinner {
+    grid-row: 1 / span 2; /* Sidebar ครอบคลุมสองแถว (Navbar + Content) */
+    grid-column: 1; /* Sidebar อยู่ในคอลัมน์แรก */
+    height: 100%; /* ให้ Sidebar ขยายเต็มพื้นที่แนวตั้ง */
+  }
+  
+  .content-useradmin {
+    grid-row: 1 / span 2; /* Content ครอบคลุม Navbar และพื้นที่ Content หลัก */
+    grid-column: 2; /* Content อยู่ในคอลัมน์ที่ 2 */
+    display: flex;
+    flex-direction: column;
+    color: #F3F9F9;
+  }
+  
+  .navbar {
+    height: 80px; /* กำหนดความสูงของ Navbar */
+    align-items: center;
+    padding: 0 20px;
+    z-index: 1; /* ทำให้ Navbar อยู่เหนือ Content */
+    width: 100%; /* จำกัดขนาด Navbar ให้อยู่ใน Content */
+    box-sizing: border-box; /* ให้ padding ถูกนับรวมกับ width */
+    position: sticky  
+  }
+
+  .detel-useradmin{
+    display: flex;
+    flex-direction: column; /* เปลี่ยนทิศทางเป็นแนวตั้ง */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: black;
+  }
+
+  

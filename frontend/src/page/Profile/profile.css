@@ -1,0 +1,102 @@
+.grid-profile {
+    display: grid;
+    grid-template-columns: 200px 1fr; /* Sidebar 200px, Content 1fr */
+    grid-template-rows: auto 1fr; /* Auto height สำหรับ Navbar, Content ขยายที่เหลือ */
+    height: 100vh; /* ความสูงเต็มหน้าจอ */
+    background-color: #F3F9F9;
+  }
+  
+  .sidebar-contrinner {
+    grid-row: 1 / span 2; /* Sidebar ครอบคลุมสองแถว (Navbar + Content) */
+    grid-column: 1; /* Sidebar อยู่ในคอลัมน์แรก */
+    height: 100%; /* ให้ Sidebar ขยายเต็มพื้นที่แนวตั้ง */
+  }
+  
+  .content-profile {
+    grid-row: 1 / span 2; /* Content ครอบคลุม Navbar และพื้นที่ Content หลัก */
+    grid-column: 2; /* Content อยู่ในคอลัมน์ที่ 2 */
+    display: flex;
+    flex-direction: column;
+    color: #F3F9F9;
+  }
+  
+
+/* พื้นหลังของหน้า */
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #0a2540, #1e3a5f);
+    color: white;
+    
+  }
+  
+  /* กล่องโปรไฟล์ */
+  .profile-card {
+    background: white;
+    color: black;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 350px;
+    position: static;
+  }
+  
+  /* ปุ่มแก้ไข */
+  .edit-btn {
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  /* รูปโปรไฟล์ */
+  .avatar-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  /* ปุ่มเปลี่ยนรูป */
+  .change-avatar-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 5px;
+  }
+  
+  /* ฟอร์มแก้ไขข้อมูล */
+  .profile-info input {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* ปุ่มบันทึก */
+  .save-btn {
+    margin-top: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  

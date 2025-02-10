@@ -1,0 +1,100 @@
+/* CSS สำหรับ Sidebar */
+.sidebar {
+    height: 100vh;
+    width: 200px;
+    background-color: #193323;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    
+  }
+  
+  .sidebar-header h2 {
+    color: #3498db;
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+  
+  .sidebar-menu {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .sidebar-item {
+    margin-bottom: 20px;
+    margin-left: 20px;
+  }
+  
+  .sidebar-link {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    transition: 0.3s;
+  }
+  
+  .sidebar-link .icon {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+  
+  .sidebar-link:hover {
+    color: #3498db;
+  }
+  
+  .sidebar-link:active {
+    color: #ecf0f1;
+  }
+
+
+  /*  */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999; /* ให้อยู่ด้านบนสุด */
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    color: black;
+    z-index: 10000; /* ให้ modal อยู่เหนือ overlay */
+  }
+  
+  .confirm-btn {
+    background: red;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+  }
+  
+  .cancel-btn {
+    background: gray;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+  }
+  
+  /* ปิดการโต้ตอบของเนื้อหาด้านหลัง */
+  body.modal-open {
+    overflow: hidden; /* ป้องกันการเลื่อนหน้าจอ */
+  }
+  
+  .content-container {
+    pointer-events: none; /* ปิดการกดเนื้อหาด้านหลัง */
+  }
+  

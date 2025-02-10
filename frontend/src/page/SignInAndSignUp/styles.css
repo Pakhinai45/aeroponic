@@ -1,0 +1,307 @@
+.SignInAndSignUp {
+    font-family: sans-serif;
+    text-align: center;
+  }
+  
+  @import url("https://fonts.googleapis.com/css?family=Montserrat:400,800");
+  
+  * {
+    box-sizing: border-box;
+  }
+
+  .SignInAndSignUp {
+    background-color: #F4F9F9;
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    position: absolute; /* เปลี่ยนจาก relative เป็น absolute */
+    width: 800px; /* ปรับขนาดความกว้าง */
+    max-width: 90%; /* จำกัดขนาดให้ไม่เกินหน้าจอ */
+    min-height: 400px; /* ปรับขนาดความสูง */
+    top: 50%; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+    left: 50%; /* จัดให้อยู่กึ่งกลางแนวนอน */
+    transform: translate(-50%, -50%); /* แก้ไขปัญหากล่องไม่อยู่กึ่งกลางจริง */
+    overflow: hidden;
+  }
+  
+  .texth1-InUp {
+    font-weight: bold;
+    margin: -35px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    color: #1D3322;
+  }
+
+  .texth1-InUpDetail{
+    font-weight: bold;
+    margin: -35px;
+    margin-top: 5px;
+    color: #ffffff;
+  }
+  
+  h2 {
+    text-align: center;
+  }
+  
+  p {
+    font-size: 14px;
+    font-weight: 100;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+    margin: 20px 0 30px;
+  }
+  
+  span {
+    font-size: 12px;
+    color: #1D3322;
+  }
+  
+  a {
+    color: #333;
+    font-size: 14px;
+    text-decoration: none;
+    margin: 15px 0;
+  }
+
+
+  /* /////////////////////////////////////////////////////////////////////// */
+  .btn-InUp {
+    border-radius: 20px;
+    border: 1px solid #1D3322;
+    background-color: #1D3322;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 12px 45px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 80ms ease-in;
+    margin-top: 5px;
+    cursor: pointer;
+  }
+  
+  .btn-InUp:active {
+    transform: scale(0.95);
+  }
+  
+  .btn-InUp:focus {
+    outline: none;
+  }
+  
+  .btn-InUp.ghost {
+    background-color: transparent;
+    border-color: #ffffff;
+  }
+
+  /* .btn-InUp:hover{
+    
+  } */
+  
+  /* ///////////////////////////////////////////////////////////////////////// */
+  form {
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 50px;
+    height: 100%;
+    text-align: center;
+  }
+  
+  input {
+    background-color: #eee;
+    border: none;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 100%;
+  }
+  
+  .containerLogin {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    position: relative;
+    overflow: hidden;
+    width: 768px;
+    max-width: 100%;
+    min-height: 480px;
+  }
+  
+  .form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+  }
+  
+  .sign-in-container {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+  }
+  
+  .container.right-panel-active .sign-in-container {
+    transform: translateX(100%);
+  }
+  
+  .sign-up-container {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+  }
+  
+  .container.right-panel-active .sign-up-container {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: show 0.6s;
+  }
+  
+  @keyframes show {
+    0%,
+    49.99% {
+      opacity: 0;
+      z-index: 1;
+    }
+  
+    50%,
+    100% {
+      opacity: 1;
+      z-index: 5;
+    }
+  }
+  
+  .overlay-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.6s ease-in-out;
+    z-index: 100;
+  }
+  
+  .container.right-panel-active .overlay-container {
+    transform: translateX(-100%);
+  }
+  
+  .overlay {
+    background: #ff416c;
+    background: -webkit-linear-gradient(to right, #DDF959, #1D3322);
+    background: linear-gradient(to right, #DDF959, #1D3322);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 0 0;
+    color: #ffffff;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+  }
+  
+  .container.right-panel-active .overlay {
+    transform: translateX(50%);
+  }
+  
+  .overlay-panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 40px;
+    text-align: center;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+  }
+  
+  .overlay-left {
+    transform: translateX(-20%);
+  }
+
+  .overlay-left button {
+    margin-top: 50px; /* ปรับระยะห่างปุ่มลงมา */
+  }
+  
+  .container.right-panel-active .overlay-left {
+    transform: translateX(0);
+  }
+  
+  .overlay-right {
+    right: 0;
+    transform: translateX(0);
+  }
+
+  .overlay-right button {
+    margin-top: 50px; /* ปรับระยะห่างปุ่มลงมา */
+  }
+  
+  .container.right-panel-active .overlay-right {
+    transform: translateX(20%);
+  }
+   
+  footer {
+    background-color: #222;
+    color: #fff;
+    font-size: 14px;
+    bottom: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 999;
+  }
+  
+  footer p {
+    margin: 10px 0;
+  }
+  
+  footer i {
+    color: red;
+  }
+  
+  footer a {
+    color: #3c97bf;
+    text-decoration: none;
+  }
+  
+  .forgot-password{
+    color: #222;
+    cursor: pointer;
+  }
+
+  /* กำหนด class สำหรับปุ่ม */
+.button-confirm-email {
+  background-color: #1D3322; /* สีพื้นหลัง */
+  color: white; /* สีตัวอักษร */
+  border: none; /* ไม่มีขอบ */
+  padding: 10px 20px; /* ขนาดปุ่ม */
+  font-size: 16px; /* ขนาดตัวอักษร */
+  border-radius: 20px; /* มุมโค้ง */
+  cursor: pointer;
+}
+
+.button-confirm-email:hover {
+  background-color: #0d9719; /* สีพื้นหลังเมื่อเมาส์วาง */
+}
+
+.button-cancel-email {
+  background-color: #830000; /* สีพื้นหลัง */
+  color: white; /* สีตัวอักษร */
+  border: none; /* ไม่มีขอบ */
+  padding: 10px 20px; /* ขนาดปุ่ม */
+  font-size: 16px; /* ขนาดตัวอักษร */
+  border-radius: 20px; /* มุมโค้ง */
+  cursor: pointer;
+}
+
+.button-cancel-email:hover {
+  background-color: #b41515; /* สีพื้นหลังเมื่อเมาส์วาง */
+}
