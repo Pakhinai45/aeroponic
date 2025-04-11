@@ -27,7 +27,7 @@ function SignInForm() {
     setIsLoading(true);  // เริ่มโหลด
 
     try {
-      const response = await axios.post("http://localhost:3300/login", {
+      const response = await axios.post("http://localhost:3300/api/users/login", {
         email: formData.email,
         password: formData.password,
       });
@@ -64,7 +64,7 @@ function SignInForm() {
     }
 
     try {
-      const response = await axios.post("http://localhost:3300/forgot-password", { email });
+      const response = await axios.post("http://localhost:3300/api/users/forgotPassword", { email });
       if (response.status === 200) {
         toast.success("A link to change your password has been sent to your email.", { theme: "colored" });
         closeForgotPassword();

@@ -60,7 +60,7 @@ function SignUpForm() {
   const handleConfirm = async () => {
     // ส่งข้อมูลไปยังเซิร์ฟเวอร์หลังจากยืนยัน
     try {
-      const response = await axios.post("http://localhost:3300/signUp", formData);
+      const response = await axios.post("http://localhost:3300/api/users/signUp", formData);
       console.log("Response:", response.data);
 
       if (response.status === 200) {

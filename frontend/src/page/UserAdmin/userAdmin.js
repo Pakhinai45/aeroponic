@@ -26,7 +26,7 @@ function UserAdmin() {
   const checkRequestStatus = async (uid) => {
     try {
       const response = await axios.get(
-        `http://localhost:3300/check-admin-request/${uid}`
+        `http://localhost:3300/api/users/checkAdminRequest/${uid}`
       );
       console.log('API Response:', response.data);
       if (response.data.exists) {
@@ -51,7 +51,7 @@ function UserAdmin() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3300/request-admin",
+        "http://localhost:3300/api/users/requestAdmin",
         requestData
       );
       alert(response.data.message);
@@ -66,7 +66,7 @@ function UserAdmin() {
   const cancelRequest = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:3300/cancel-admin-request/${uid}`
+        `http://localhost:3300/api/users/cancelAdminRequest/${uid}`
       );
       alert(response.data.message);
       checkRequestStatus(uid); 

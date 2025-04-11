@@ -13,7 +13,7 @@ function ManageAdmin() {
   // ฟังก์ชันดึงข้อมูลผู้ใช้ทั้งหมด
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3300/getUser");
+      const response = await axios.get("http://localhost:3300/api/users/getUser");
       if (response.data.success) {
         setUsers(response.data.users);
         setFilteredUsers(response.data.users); // ตั้งค่าเริ่มต้นให้แสดงทุกผู้ใช้
@@ -65,7 +65,7 @@ function ManageAdmin() {
 
     try {
       const response = await axios.put(
-        `http://localhost:3300/updateUser/${selectedUser.id}`, // ใช้ id จาก selectedUser ใน URL
+        `http://localhost:3300/api/users/updateUser/${selectedUser.id}`, // ใช้ id จาก selectedUser ใน URL
         selectedUser // ส่งข้อมูลที่ถูกแก้ไขไป
       );
       alert(response.data.message);
@@ -84,7 +84,7 @@ function ManageAdmin() {
 
     try {
       const response = await axios.delete(
-        `http://localhost:3300/deleteUser/${userId}`
+        `http://localhost:3300/api/users/deleteUser/${userId}`
       );
       alert(response.data.message);
 
@@ -117,7 +117,7 @@ function ManageAdmin() {
     }
 
     try {
-      const response = await axios.post("http://localhost:3300/signUpByRoot", {
+      const response = await axios.post("http://localhost:3300/api/users/signUpByRoot", {
         name: name,
         phon: phon,
         email: email,

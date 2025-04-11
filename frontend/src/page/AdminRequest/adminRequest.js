@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-// import Navbar from "../../components/navbar/navbar";
 import Sidebar from "../../components/sidebar/Sidebar";
 import "./adminRequest.css";
 
@@ -11,7 +10,7 @@ function AdminRequest() {
   // ฟังก์ชันดึงข้อมูลจาก API
   const fetchRequests = async () => {
     try {
-      const response = await axios.get("http://localhost:3300/admin-requests-all");
+      const response = await axios.get("http://localhost:3300/api/users/adminRequestsAll");
       setRequests(response.data);
     } catch (error) {
       console.error("Error fetching requests:", error.message);
@@ -30,7 +29,7 @@ function AdminRequest() {
   const approveRequest = async (id) =>{
 
     try {
-      const response = await axios.post(`http://localhost:3300/approve-admin/${id}`);
+      const response = await axios.post(`http://localhost:3300/api/users/approveAdmin/${id}`);
       alert(response.data.message);
     } catch (error) {
       console.error(error);
@@ -41,7 +40,7 @@ function AdminRequest() {
   //ปฏิเสธคำขอ
   const refuseRequest = async (id) =>{
     try {
-      const response = await axios.post(`http://localhost:3300/refuse-admin/${id}`);
+      const response = await axios.post(`http://localhost:3300/api/users/refuseAdmin/${id}`);
       alert(response.data.message);
     } catch (error) {
       console.error(error);
@@ -52,7 +51,7 @@ function AdminRequest() {
   const cancelRequest = async (id) => {
     try {
       console.log(`Canceling request with id:`, id);
-      const response = await axios.delete(`http://localhost:3300/cancel-admin-request/${id}`);
+      const response = await axios.delete(`http://localhost:3300/api/users/cancelAdminRequest/${id}`);
       alert(response.data.message);
       setRequests((prevRequests) => prevRequests.filter(request => request.id !== id));
 

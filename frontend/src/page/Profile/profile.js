@@ -27,7 +27,7 @@ function Profile() {
   // ฟังก์ชันบันทึกข้อมูลไปยัง API
   const handleSave = async () => {
     try {
-      const response = await axios.put(`http://localhost:3300/updateUser/${uid}`, profile);
+      const response = await axios.put(`http://localhost:3300/api/users/updateUser/${uid}`, profile);
 
       if (response.data.success) {
         alert("✅ บันทึกข้อมูลสำเร็จ!");
