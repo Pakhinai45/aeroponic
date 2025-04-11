@@ -9,6 +9,7 @@ function ManageAdmin() {
   const [filteredUsers, setFilteredUsers] = useState([]); // เพิ่มการกรองข้อมูล
   const [selectedUser, setSelectedUser] = useState(null); // เก็บข้อมูลผู้ใช้ที่ต้องการแก้ไข
   const [modalVisible, setModalVisible] = useState(false); // สถานะการแสดง modal
+  const [modalCreateUser, setmodalCreateUser] = useState(false); // สถานะการแสดง modal
 
   // ฟังก์ชันดึงข้อมูลผู้ใช้ทั้งหมด
   const fetchUsers = async () => {
@@ -34,7 +35,7 @@ function ManageAdmin() {
     if (status === null) {
       setFilteredUsers(users); // หากไม่มีการเลือกกรอง ให้แสดงข้อมูลทั้งหมด
     } else {
-      setFilteredUsers(users.filter(user => user.status === status)); // กรองตาม status
+      setFilteredUsers(users.filter((user) => user.status === status)); // กรองตาม status
     }
   };
 
@@ -47,6 +48,12 @@ function ManageAdmin() {
   // ฟังก์ชันสำหรับปิด modal
   const closeEditModal = () => {
     setModalVisible(false);
+    setSelectedUser(null);
+  };
+
+  // ปิด modal สำหรับสร้างบัญชี
+  const closeAddModal = () => {
+    setmodalCreateUser(false);
     setSelectedUser(null);
   };
 
@@ -73,6 +80,65 @@ function ManageAdmin() {
     }
   };
 
+  const deleteUser = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+
+    try {
+      const response = await axios.delete(
+        `http://localhost:3300/deleteUser/${userId}`
+      );
+      alert(response.data.message);
+
+      // รีเฟรชข้อมูลผู้ใช้หลังจากลบ
+      fetchUsers();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
+  };
+
+  // ฟังก์ชันสำหรับเปิด modal เพื่อเพิ่มบัญชีใหม่
+  const openAddModal = () => {
+    setSelectedUser({
+      name: "",
+      email: "",
+      phon: "",
+      password: "", // เพิ่มฟิลด์ password
+      status: 0, // ค่าเริ่มต้นเป็นบัญชีทั่วไป
+      tokenline: "",
+    });
+    setmodalCreateUser(true);
+  };
+
+  const handleCreateUser = async () => {
+    const { name, email, password, phon, status, tokenline } = selectedUser;
+
+    if (!name || !email || !phon || !password ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://localhost:3300/signUpByRoot", {
+        name: name,
+        phon: phon,
+        email: email,
+        password: password, 
+        status: status,
+        tokenline: tokenline,
+      });
+
+      alert(response.data.message);
+
+      // รีเฟรชข้อมูลทั้งหมดจากเซิร์ฟเวอร์
+      fetchUsers();
+
+      closeAddModal();
+    } catch (error) {
+      console.error("Error creating user:", error);
+      alert(error.response?.data?.message || "Failed to create user.");
+    }
+  };
+
   return (
     <div className="grid-manageAdmin">
       <div className="sidebar-container">
@@ -95,22 +161,47 @@ function ManageAdmin() {
           </div>
 
           <div className="users-list">
+            <div
+              className="user-card add-user-card"
+              onClick={() => openAddModal()}
+            >
+              <p className="add-icon">➕</p>
+              <p>Add New User</p>
+            </div>
+
             {filteredUsers.length === 0 ? (
               <p className="no-users">No users available</p>
             ) : (
               filteredUsers.map((user, index) => (
                 <div key={index} className="user-card">
                   {/* ไอคอนปากกา */}
-                  <button className="edit-icon" onClick={() => openEditModal(user)}>
+                  <button
+                    className="edit-icon"
+                    onClick={() => openEditModal(user)}
+                  >
                     ✏️
                   </button>
-
-                  <p><strong>Name:</strong> {user.name}</p>
-                  <p><strong>Email:</strong> {user.email}</p>
-                  <p><strong>Phone:</strong> {user.phon}</p>
-                  <p><strong>Status:</strong> {user.status}</p>
-                  <p><strong>TokenLine:</strong> {user.tokenline}</p>
-
+                  <button
+                    className="edit-icon"
+                    onClick={() => deleteUser(user.id)}
+                  >
+                    🗑️
+                  </button>
+                  <p>
+                    <strong>Name:</strong> {user.name}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {user.email}
+                  </p>
+                  <p>
+                    <strong>Phone:</strong> {user.phon}
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {user.status}
+                  </p>
+                  <p>
+                    <strong>TokenLine:</strong> {user.tokenline}
+                  </p>
                 </div>
               ))
             )}
@@ -119,7 +210,7 @@ function ManageAdmin() {
       </div>
 
       {/* Modal สำหรับแก้ไขข้อมูล */}
-      {modalVisible && selectedUser && (
+      {modalVisible && !modalCreateUser && selectedUser && (
         <div className="modal">
           <div className="modal-content">
             <h2>Edit User Information</h2>
@@ -127,26 +218,35 @@ function ManageAdmin() {
             <input
               type="text"
               value={selectedUser.name}
-              onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value })}
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, name: e.target.value })
+              }
             />
             <label>Email</label>
             <input
               type="text"
-              value={selectedUser.phon}
-              onChange={(e) => setSelectedUser({ ...selectedUser, phon: e.target.value })}
+              value={selectedUser.email}
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, email: e.target.value })
+              }
             />
             <label>Phone:</label>
             <input
               type="text"
-              value={selectedUser.email}
-              onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
+              value={selectedUser.phon}
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, phon: e.target.value })
+              }
             />
             <label>Status</label>
             <input
               type="number"
               value={selectedUser.status}
               onChange={(e) => {
-                const newValue = Math.min(Math.max(Number(e.target.value), 0), 2);
+                const newValue = Math.min(
+                  Math.max(Number(e.target.value), 0),
+                  2
+                );
                 setSelectedUser({ ...selectedUser, status: newValue });
               }}
             />
@@ -154,7 +254,9 @@ function ManageAdmin() {
             <input
               type="text"
               value={selectedUser.tokenline}
-              onChange={(e) => setSelectedUser({ ...selectedUser, tokenline: e.target.value })}
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, tokenline: e.target.value })
+              }
             />
 
             <div className="modal-actions">
@@ -164,6 +266,73 @@ function ManageAdmin() {
           </div>
         </div>
       )}
+
+      {/* Modal สร้างบัญชี */}
+      {modalCreateUser && !modalVisible && selectedUser && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Create New User</h2> {/* เปลี่ยนข้อความให้ชัดเจน */}
+            <label>Name</label>
+            <input
+              type="text"
+              value={selectedUser.name}
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, name: e.target.value })
+              }
+            />
+            <label>Email</label>
+            <input
+              type="text"
+              value={selectedUser.email}
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, email: e.target.value })
+              }
+            />
+            <label>Password</label>
+            <input
+              type="password"
+              value={selectedUser.password}
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, password: e.target.value })
+              }
+            />
+            <label>Phone:</label>
+            <input
+              type="text"
+              value={selectedUser.phon}
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, phon: e.target.value })
+              }
+            />
+            <label>Status</label>
+            <input
+              type="number"
+              value={selectedUser.status}
+              onChange={(e) => {
+                const newValue = Math.min(
+                  Math.max(Number(e.target.value), 0),
+                  2
+                );
+                setSelectedUser({ ...selectedUser, status: newValue });
+              }}
+            />
+            <label>TokenLine</label>
+            <input
+              type="text"
+              value={selectedUser.tokenline}
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, tokenline: e.target.value })
+              }
+            />
+
+            <div className="modal-actions">
+              <button onClick={handleCreateUser}>Create User</button> {/* ปรับข้อความปุ่ม */}
+              <button onClick={closeAddModal}>Cancel</button> {/* ปิด modal สร้าง */}
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

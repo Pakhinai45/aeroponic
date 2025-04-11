@@ -9,6 +9,8 @@ import { auth, db, signInWithEmailAndPassword } from "./firebase/firebaseConfig.
 import { createUserWithEmailAndPassword , sendPasswordResetEmail } from "firebase/auth";
 import { setDoc, doc, getDoc, deleteDoc, collection, getDocs, updateDoc} from 'firebase/firestore';
 
+import {adminAuth , adminDb} from "./firebase/firebaseConfigAdmin.js";
+
 
 // กำหนดตัวแปรที่จำเป็น
 const app = express();
@@ -21,7 +23,7 @@ dotenv.config();
 
 //API//
 
-//เข้าสู่ระบบ
+//เข้าสู่ระบบ -----------------------------------------------------------------------------------------------
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -37,7 +39,7 @@ app.post("/login", async (req, res) => {
     }
 });
 
-//สมัคสมาชิก
+//สมัคสมาชิก-----------------------------------------------------------------------------------------------
 app.post('/signUp', async (req, res) => {
     const { name, phon, email, password } = req.body; 
 
@@ -63,7 +65,33 @@ app.post('/signUp', async (req, res) => {
     }
 });
 
-//เปลี่ยนหรัสผ่าน
+//สมัคสมาชิกโดยroot-----------------------------------------------------------------------------------------------
+app.post('/signUpByRoot', async (req, res) => {
+    const { name, phon, email, password, status, tokenline } = req.body; 
+
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user; 
+
+        if (user) {
+            await setDoc(doc(db, "Users", user.uid), {
+                name: name,
+                phon: phon,
+                email: email,
+                status: status,
+                tokenline: tokenline,
+                createdAt: new Date().toISOString(),
+            });
+        }
+
+        res.status(200).json({ message: "สร้างบัญชีสำเร็จ" });
+    } catch (error) {
+        console.error("Error saving data:", error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
+//เปลี่ยนหรัสผ่าน-----------------------------------------------------------------------------------------------
 app.post("/forgot-password", async (req, res) => {
     const { email } = req.body;
   
@@ -81,7 +109,7 @@ app.post("/forgot-password", async (req, res) => {
   });
 
 
-//ดึงข้อมูลผู้ใช้ทั้งหมดตาม UID
+//ดึงข้อมูลผู้ใช้ทั้งหมดตาม UID-------------------------------------------------------------------------------------
 app.get("/getUser/:uid", async (req, res) => {
     const { uid } = req.params;
 
@@ -100,7 +128,7 @@ app.get("/getUser/:uid", async (req, res) => {
 });
 
 
-//ส่งคำขอเป็น Admin
+//ส่งคำขอเป็น Admin-----------------------------------------------------------------------------------------------
 app.post('/request-admin', async (req,res)=>{
     const { name, phon, uid  } = req.body; 
 
@@ -117,7 +145,7 @@ app.post('/request-admin', async (req,res)=>{
     }
 });
 
-// ตรวจสอบคำขอเป็น Admin ใน Database และส่ง status กลับ
+// ตรวจสอบคำขอเป็น Admin ใน Database และส่ง status กลับ--------------------------------------------------------------
 app.get('/check-admin-request/:uid', async (req, res) => {
     const { uid } = req.params;
 
@@ -142,7 +170,7 @@ app.get('/check-admin-request/:uid', async (req, res) => {
 });
 
 
-//ลบคำขอเป็น Admin
+//ลบคำขอเป็น Admin-----------------------------------------------------------------------------------------------
 app.delete('/cancel-admin-request/:uid', async (req, res) => {
     const { uid } = req.params;
 
@@ -157,7 +185,7 @@ app.delete('/cancel-admin-request/:uid', async (req, res) => {
     }
 });
 
-//ดึงคำขอเป็น Admin ทั้งหมด
+//ดึงคำขอเป็น Admin ทั้งหมด-----------------------------------------------------------------------------------------------
 app.get('/admin-requests-all', async (req, res) => {
     try {
         const querySnapshot = await getDocs(collection(db, "admin_request"));
@@ -170,7 +198,7 @@ app.get('/admin-requests-all', async (req, res) => {
     }
 });
 
-//อนุมัติการเป็น Admin
+//อนุมัติการเป็น Admin-----------------------------------------------------------------------------------------------
 app.post('/approve-admin/:uid', async (req,res)=>{
 
     const {uid} = req.params;
@@ -194,7 +222,7 @@ app.post('/approve-admin/:uid', async (req,res)=>{
     }
 });
 
-//ปฏิเสธการเป็น Admin
+//ปฏิเสธการเป็น Admin-----------------------------------------------------------------------------------------------
 app.post('/refuse-admin/:uid', async (req,res)=>{
 
     const {uid} = req.params;
@@ -219,7 +247,7 @@ app.post('/refuse-admin/:uid', async (req,res)=>{
 });
 
 
-//ดึงข้อมูลผู้ใช้ทั้งหมด
+//ดึงข้อมูลผู้ใช้ทั้งหมด-----------------------------------------------------------------------------------------------
 app.get("/getUser", async (req, res) => {
     try {
         // ดึงข้อมูลจากคอลเลกชัน Users
@@ -244,8 +272,7 @@ app.get("/getUser", async (req, res) => {
 });
 
 
-
-// ฟังก์ชันสำหรับอัปเดตข้อมูลผู้ใช้
+// ฟังก์ชันสำหรับอัปเดตข้อมูลผู้ใช้หน้าโปรไฟล์---------------------------------------------------------------------------------
 app.put("/updateUser/:id", async (req, res) => {
     const uid = req.params.id; // รับ ID จาก URL
     const updatedUserData = req.body; // ข้อมูลผู้ใช้ที่อัปเดต
@@ -267,6 +294,29 @@ app.put("/updateUser/:id", async (req, res) => {
     } catch (error) {
       console.error("Error updating user:", error);
       res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+//ลบบัญชีผู้ใข้
+app.delete("/deleteUser/:id", async (req, res)=>{
+    const uid = req.params.id;
+
+    try {
+        await adminDb.collection("Users").doc(uid).delete();
+        console.log(`🔥 Deleted Firestore document for UID: ${uid}`);
+
+        await adminAuth.deleteUser(uid);
+        console.log(`✅ Deleted Auth account for UID: ${uid}`);
+
+        return res.status(200).json({
+            message: `User ${uid} deleted successfully.`,
+        });
+
+    } catch (error) {
+        console.error("❌ Error deleting user:", error);
+        return res.status(500).json({
+        error: error.message,
+        });
     }
 });
 

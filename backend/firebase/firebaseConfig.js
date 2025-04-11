@@ -14,9 +14,8 @@ const firebaseConfig = {
   measurementId: "G-DK4EM20L5M"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-export { app, auth, signInWithEmailAndPassword, db };
+export { app, auth, signInWithEmailAndPassword, db};
