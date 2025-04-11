@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import Navbar from "../../components/navbar/navbar";
 import Sidebar from "../../components/sidebar/Sidebar";
 import axios from "axios";
 import "./manageAdmin.css";
