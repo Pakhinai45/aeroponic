@@ -4,7 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 import userRoutes from './routes/userRoutes.js';
-import sensorRoutes from './controllers/sensor.js'; 
+import sensorRoutes from './routes/sensorRoutes.js'; 
 
 dotenv.config();
 

@@ -1,34 +1,11 @@
-import React, { useState, useEffect } from "react";
-import axios from 'axios';
+import React from "react";
 
-const Temperature = () => {
-  const [sensorData, setSensorData] = useState(null); // สถานะสำหรับค่าความชื้น
-
-  useEffect(() => {
-    const fetchSensorData = () =>{
-      axios.get('http://192.168.25.198:3300/data')
-      .then(response => {
-        // console.log(`Temperature = `,response.data.temperature)
-        setSensorData(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching sensor data:",error);
-      });
-    };
-
-    fetchSensorData();
-
-    const intervalId = setInterval(fetchSensorData,1000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-
+const Temperature = ({ data }) => {
   return (
     <div>
-      {sensorData ? (
+      {data ? (
         <div>
-          <p style={{color:'red'}}>Temperature: {sensorData.temperature}%</p>
+          <p style={{color:'red'}}>Temperature: {data.temperature}%</p>
         </div>
       ) : (
         <p style={{color:"#1D3322"}}>Loading sensor data...</p>

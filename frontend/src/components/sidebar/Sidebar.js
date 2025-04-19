@@ -52,7 +52,7 @@ function Sidebar() {
         )}
 
         <li className="sidebar-item">
-          <Link to="/profile" className="sidebar-link">Settings</Link>
+          <Link to="/profile" className="sidebar-link">Profile</Link>
         </li>
 
         <li className="sidebar-item" onClick={() => setShowLogoutModal(true)}>

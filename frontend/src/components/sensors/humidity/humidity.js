@@ -1,39 +1,15 @@
-import React, { useState, useEffect } from "react";
-// import ReactSpeedometer from "react-d3-speedometer";
-import './humidity.css'
-import axios from 'axios';
+import React from "react";
+import './humidity.css';
 
-const Humidity = () => {
-  const [sensorData, setSensorData] = useState(null); // สถานะสำหรับค่าความชื้น
-
-  useEffect(() => {
-    const fetchSensorData = () =>{
-      axios.get('http://192.168.25.198:3300/data')
-      .then(response => {
-        // console.log(`Humidity = `,response.data.humidity)
-        setSensorData(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching sensor data:",error);
-      });
-    };
-
-    fetchSensorData();
-
-    const intervalId = setInterval(fetchSensorData,1000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-
+const Humidity = ({ data }) => {
   return (
     <div>
-      {sensorData ? (
+      {data ? (
         <div>
-          <p style={{color:'red'}}>Humidity: {sensorData.humidity}%</p>
+          <p style={{ color: 'red' }}>Humidity: {data.humidity}%</p>
         </div>
       ) : (
-        <p style={{color:"#1D3322"}}>Loading sensor data...</p>
+        <p style={{ color: "#1D3322" }}>Loading sensor data...</p>
       )}
     </div>
   );

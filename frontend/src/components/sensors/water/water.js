@@ -1,31 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 // import { useSpring, animated } from "@react-spring/web";
 import './water.css' 
-import axios from 'axios';
+import { data } from "react-router-dom";
 
-
-const WaterLevel = () => {
-
-  const [sensorData, setSensorData] = useState(null); // สถานะสำหรับค่าความชื้น
-
-  useEffect(() => {
-    const fetchSensorData = () =>{
-      axios.get('http://192.168.25.198:3300/data')
-      .then(response => {
-        // console.log(`WaterLevel = `,response.data.distance)
-        setSensorData(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching sensor data:",error);
-      });
-    };
-
-    fetchSensorData();
-
-    const intervalId = setInterval(fetchSensorData,1000);
-
-    return () => clearInterval(intervalId);
-  }, []);
+const WaterLevel = ({data}) => {
 
   // const [level, setLevel] = useState(50); // ระดับน้ำเริ่มต้น (%)
 
@@ -49,11 +27,10 @@ const WaterLevel = () => {
   // };
 
   return (
-
     <div>
-      {sensorData ? (
+      {data ? (
         <div>
-          <p style={{color:'red'}}>WaterLevel: {sensorData.distance}%</p>
+          <p style={{color:'red'}}>WaterLevel: {data.distance}%</p>
         </div>
       ) : (
         <p style={{color:"#1D3322"}}>Loading sensor data...</p>
