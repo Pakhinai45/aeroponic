@@ -1,29 +1,36 @@
 import { db } from "../firebase/firebaseConfig.js";
-import { setDoc, doc, getDocs, collection} from 'firebase/firestore';
-
+import { setDoc, doc, getDocs, getDoc, collection} from 'firebase/firestore';
 
 let sensorData = {};
 
-// Mock Data สำหรับทดสอบ
-const mockSensorData = {
-    id : 'sensor02',
-    distance: '120', 
-    humidity: '55',  
-    temperature: '23', 
-    ldr: '300', 
-    pH: '7.2', 
-    pumpState: false, 
-    isFlowing: false, 
-  };
-
 // POST sensorId
 export const putSensorId = async (req, res) => {
-    const { sensorId } = req.body;
+  const { sensorId } = req.body;
+
+    if (!sensorId || sensorId.trim() === '') {
+        return res.status(400).json({ success: false, error: 'Sensor ID is required' });
+    }
+
     try {
-        await setDoc(doc(db, 'plant_beds', sensorId) , {sensorId});
+        // เช็คว่า sensorId มีอยู่ใน Firestore แล้วไหม
+        const docRef = doc(db, 'plant_beds', sensorId);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            return res.status(400).json({ success: false, error: 'Sensor ID already exists in Firestore' });
+        }
+
+        // เช็คว่า sensorId มีอยู่ใน sensorData (จาก ESP32 ส่งมาหรือยัง)
+        if (!sensorData[sensorId]) {
+            return res.status(400).json({ success: false, error: 'Sensor ID has not sent any data yet from ESP32' });
+        }
+
+        // ผ่านทั้ง 2 เงื่อนไข —> เพิ่มลง Firestore
+        await setDoc(docRef, { sensorId });
         res.json({ success: true });
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ success: false, error: error.message });
     }
 };
 
@@ -87,32 +94,32 @@ export const sensor = async (req, res) => {
 };
 
 // เปลี่ยนสถานะปั๊มของ ESP32 ที่ระบุ
-// export const togglePump = async (req, res) => {
-//     const { id, pumpState } = req.body;
+export const togglePump = async (req, res) => {
+    const { id, pumpState } = req.body;
   
-//     if (!id || pumpState === undefined) {
-//       return res.status(400).json({ success: false, error: 'Missing ID or pumpState' });
-//     }
+    if (!id || pumpState === undefined) {
+      return res.status(400).json({ success: false, error: 'Missing ID or pumpState' });
+    }
   
-//     if (!sensorData[id]) {
-//       sensorData[id] = {
-//         distance: '',
-//         humidity: '',
-//         temperature: '',
-//         ldr: '',
-//         pH: '',
-//         pumpState: false,
-//         isFlowing: false
-//       };
-//     }
+    if (!sensorData[id]) {
+      sensorData[id] = {
+        distance: '',
+        humidity: '',
+        temperature: '',
+        ldr: '',
+        pH: '',
+        pumpState: false,
+        isFlowing: false
+      };
+    }
   
-//     sensorData[id].pumpState = pumpState;
-//     sensorData[id].isFlowing = pumpState ? 1 : 0;
+    sensorData[id].pumpState = pumpState;
+    sensorData[id].isFlowing = pumpState ? 1 : 0;
   
-//     console.log(`Pump state for ${id} updated to: ${pumpState}`);
+    console.log(`Pump state for ${id} updated to: ${pumpState}`);
   
-//     res.json({ success: true });
-//   };
+    res.json({ success: true });
+  };
 
 // รับข้อมูลของ ESP32 ตาม ID
 export const getDataById = async (req, res) => {

@@ -30,3 +30,8 @@
   position: sticky  
 }
 
+.align-right-dashboard {
+  display: flex;
+  justify-content: flex-end;
+}
+

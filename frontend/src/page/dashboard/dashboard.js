@@ -69,14 +69,25 @@ function Dashboard() {
     if (!inputId.trim()) return;
 
     axios.post("http://localhost:3300/sensor-id", { sensorId: inputId })
-      .then(() => {
-        setSensorList(prev => [...prev, { id: inputId }]);
+    .then(() => {
+      // ✅ โหลดรายการ sensor ใหม่จาก backend
+      return axios.get("http://localhost:3300/sensor-id");
+    })
+    .then((res) => {
+      if (res.data.sensors && res.data.sensors.length > 0) {
+        setSensorList(res.data.sensors);
         setSensorId(inputId);
         setInputId("");
-      })
-      .catch(err => {
-        console.error("Error saving sensorId:", err);
-      });
+      }
+    })
+    .catch(err => {
+      console.error("Error saving sensorId:", err);
+      if (err.response?.data?.error === "Sensor ID already exists") {
+        alert("Sensor ID นี้ถูกใช้ไปแล้ว");
+      } else { 
+        alert("ไม่มี Sensor ID ในระบบ");
+      }
+    });
   };
 
   return (
@@ -119,7 +130,7 @@ function Dashboard() {
         {/* แสดงข้อมูล sensor */}
         {sensorId && sensorData ? (
           <Box sx={{ flexGrow: 2 }}>
-            <Grid container spacing={1}>
+            <Grid container spacing={1} >
               <CustomGrid size={4} height={200}>
                 <WaterLevel data={sensorData} />
               </CustomGrid>
@@ -135,10 +146,14 @@ function Dashboard() {
               <CustomGrid size={2} height={200}>
                 <PH data={sensorData} />
               </CustomGrid>
-              <CustomGrid size={10} height={350}></CustomGrid>
-              <CustomGrid size={2} height={200}>
+              <CustomGrid size={8} height={350}></CustomGrid>
+              <CustomGrid size={4} height={200}>
                 <ControSwitch data={sensorData} />
               </CustomGrid>
+              <div className="align-right-dashboard">
+                <CustomGrid size={4} height={150}></CustomGrid>
+              </div>
+              
             </Grid>
           </Box>
         ) : (
