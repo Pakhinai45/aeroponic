@@ -1,0 +1,31 @@
+.ph_container {
+    width: fit-content;
+    margin: 20px auto;
+    position: relative;
+  }
+  
+  .ph_bar {
+    display: flex;
+    width: 400px;
+    height: 100px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .ph_level {
+    flex: 1;
+    color: white;
+    text-align: center;
+    line-height: px;
+    font-weight: bold;
+    font-size: 16px;
+    width: 20px;
+  }
+  
+  .ph_indicator {
+    position: absolute;
+    top: 42px;
+    font-size: 24px;
+    transition: left 0.3s ease;
+  }

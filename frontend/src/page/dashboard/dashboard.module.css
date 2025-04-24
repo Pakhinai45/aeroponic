@@ -1,0 +1,36 @@
+.grid {
+  display: grid;
+  grid-template-columns: 200px 1fr; /* Sidebar | Content */
+  height: 100vh; /* เต็มความสูงหน้าจอ */
+  background-color: #F3F9F9;
+}
+
+.sidebar_contrinner {
+  grid-column: 1; /* อยู่คอลัมน์ซ้าย */
+  height: 100%;
+}
+
+.content {
+  grid-column: 2; /* อยู่คอลัมน์ขวา */
+  display: flex;
+  flex-direction: column;
+  color: black; /* เปลี่ยนจาก #F3F9F9 เพื่อให้มองเห็นข้อความ */
+  padding: 1rem; /* เพิ่มระยะขอบใน content */
+  overflow-y: auto; /* ถ้ามีเนื้อหาเยอะ ให้ scroll ได้ */
+}
+
+.align-right-dashboard {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.position_all {
+  position: relative;
+}
+
+.title {
+  color: black;
+  position: absolute;
+  top: -20px;
+  font-weight: bold;
+}

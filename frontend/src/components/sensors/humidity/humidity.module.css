@@ -1,0 +1,29 @@
+.drop {
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle at 30% 30%, #a0eaff, #00aaff);
+    border: 5px solid #23d7ff;
+    border-radius: 0% 100% 100% 100%;
+    margin: 100px auto;
+    transform: rotate(45deg);
+    top: -45px;
+    box-shadow: 
+      0 8px 15px rgba(0, 0, 0, 0.2),
+      inset -5px -5px 15px rgba(255, 255, 255, 0.3);
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .data_sensor {
+    transform: rotate(-45deg); 
+    font-size: 30px;
+    font-weight: bold;
+    color: white; 
+  }
+  
+  
+
+  

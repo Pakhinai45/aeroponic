@@ -17,7 +17,7 @@ function Sidebar() {
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <h2>Arrowponic</h2>
+        <h2>Aeroponic</h2>
       </div>
       <ul className="sidebar-menu">
         <li className="sidebar-item">

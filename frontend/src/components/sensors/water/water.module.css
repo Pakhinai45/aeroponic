@@ -1,0 +1,35 @@
+
+  .circle_container {
+    position: relative;
+    bottom: -25px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 8px solid #E2E2E0;
+    overflow: hidden;
+    background-color: #aaa;
+    box-shadow:
+    0 8px 15px rgba(0, 0, 0, 0.2),
+      inset -5px -5px 15px rgba(255, 255, 255, 0.3);
+  }
+  
+  .wave_wrapper {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    overflow: hidden;
+    z-index: 1;
+    transition: height 0.5s;
+  }
+
+  .water_level {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    z-index: 2;
+  }
+  

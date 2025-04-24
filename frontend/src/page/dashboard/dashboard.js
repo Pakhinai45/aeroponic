@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 
 import Sidebar from "../../components/sidebar/Sidebar";
-import "./dashboard.css";
+import style from "./dashboard.module.css";
 
 import Humidity from "../../components/sensors/humidity/humidity";
 import Light from "../../components/sensors/light/light";
@@ -14,12 +14,18 @@ import Temperature from "../../components/sensors/temper/temper";
 import ControSwitch from "../../components/sensors/contro_switch/contro_switch";
 import WaterLevel from "../../components/sensors/water/water";
 
+
 const CustomGrid = ({ size, height, children, rowGap }) => (
   <Grid
     size={size}
     height={height}
     rowGap={rowGap}
-    sx={{ border: "2px solid #70807F", borderRadius: "8px" }}
+    sx={{ border: "2px solid #70807F", 
+          borderRadius: "8px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-start",
+        }}
     backgroundColor="#FFFFFF"
   >
     {children}
@@ -91,12 +97,12 @@ function Dashboard() {
   };
 
   return (
-    <div className="grid-dashboard">
-      <div className="sidebar-contrinner">
+    <div className={style.grid}>
+      <div className={style.sidebar_contrinner}>
         <Sidebar />
       </div>
 
-      <div className="content-dashboard">
+      <div className={style.content}>
         {/* ช่องเพิ่ม sensorId */}
         <div style={{ marginBottom: "1rem" }}>
           <input
@@ -131,29 +137,47 @@ function Dashboard() {
         {sensorId && sensorData ? (
           <Box sx={{ flexGrow: 2 }}>
             <Grid container spacing={1} >
-              <CustomGrid size={4} height={200}>
-                <WaterLevel data={sensorData} />
-              </CustomGrid>
+
               <CustomGrid size={2} height={200}>
-                <Humidity data={sensorData} />
+                <div className={style.position_all} >
+                  <p className={style.title} style={{left:"-20px"}}>Water Level</p>
+                  <WaterLevel data={sensorData} />
+                </div>
               </CustomGrid>
+
               <CustomGrid size={2} height={200}>
-                <Temperature data={sensorData} />
+                <div className={style.position_all}>
+                <p className={style.title} style={{left:"-35px"}}>Humidity</p>
+                  <Humidity data={sensorData} />
+                </div>          
               </CustomGrid>
+
+              <CustomGrid size={2} height={200}>
+                <div className={style.position_all} >
+                  <p className={style.title} style={{left:"-60px"}}>Temperature</p>
+                 <Temperature data={sensorData} />
+                </div>
+              </CustomGrid>
+
               <CustomGrid size={2} height={200}>
                 <Light data={sensorData} />
               </CustomGrid>
-              <CustomGrid size={2} height={200}>
-                <PH data={sensorData} />
+
+              <CustomGrid size={4} height={200}>
+                <div className={style.position_all}>
+                  <p className={style.title} style={{left:"-5px"}}>Ph</p>
+                  <PH data={sensorData} />
+                </div>
               </CustomGrid>
-              <CustomGrid size={8} height={350}></CustomGrid>
+
+              <CustomGrid size={8} height={350}>
+
+              </CustomGrid>
+
               <CustomGrid size={4} height={200}>
                 <ControSwitch data={sensorData} />
-              </CustomGrid>
-              <div className="align-right-dashboard">
-                <CustomGrid size={4} height={150}></CustomGrid>
-              </div>
-              
+              </CustomGrid>   
+
             </Grid>
           </Box>
         ) : (
