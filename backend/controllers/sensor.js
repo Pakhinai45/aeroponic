@@ -1,11 +1,11 @@
 import { db } from "../firebase/firebaseConfig.js";
-import { setDoc, doc, getDocs, getDoc, collection} from 'firebase/firestore';
+import { setDoc, doc, getDocs, getDoc, collection, addDoc} from 'firebase/firestore';
 
 let sensorData = {};
 
 // POST sensorId
 export const putSensorId = async (req, res) => {
-  const { sensorId } = req.body;
+  const { sensorId, name, vegetableName, location } = req.body;
 
     if (!sensorId || sensorId.trim() === '') {
         return res.status(400).json({ success: false, error: 'Sensor ID is required' });
@@ -26,13 +26,20 @@ export const putSensorId = async (req, res) => {
         }
 
         // ผ่านทั้ง 2 เงื่อนไข —> เพิ่มลง Firestore
-        await setDoc(docRef, { sensorId });
+        await setDoc(docRef, { 
+          sensorId,
+          name,
+          vegetableName,
+          location,
+          createdAt : new Date().toISOString() 
+        });
         res.json({ success: true });
 
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+
 
 // GET sensorIds ทั้งหมดใน plant_beds
 export const getSensorId = async (req, res) => {
@@ -71,7 +78,7 @@ export const sensor = async (req, res) => {
         };
       }
 
-    // อัปเดตค่าที่ส่งมา
+    
     if (distance !== undefined) sensorData[id].distance = distance;
     if (humidity !== undefined) sensorData[id].humidity = humidity;
     if (temperature !== undefined) sensorData[id].temperature = temperature;
@@ -79,8 +86,9 @@ export const sensor = async (req, res) => {
     if (pH !== undefined) sensorData[id].pH = pH;
     if (isFlowing !== undefined) sensorData[id].isFlowing = isFlowing;
 
+    sensorData[id].updatedAt = new Date().toISOString();
+
     console.log('------------------------------------');
-    
     console.log(`--- [${id}] ---`);
     console.log(`Distance: ${sensorData[id].distance} cm`);
     console.log(`Humidity: ${sensorData[id].humidity}%`);
@@ -89,9 +97,46 @@ export const sensor = async (req, res) => {
     console.log(`pH: ${sensorData[id].pH}`);
     console.log(`Pump State: ${sensorData[id].pumpState}`);
     console.log(`Is Flowing: ${sensorData[id].isFlowing}`);
+    console.log(`time is :${sensorData[id].updatedAt}`)
 
     res.json({ message: `Data from ${id} received.` });
+
+    await saveSensorToFirestore(id);
+
 };
+
+const saveSensorToFirestore = async (id) => {
+  const now = Date.now();
+  const rec_time = 60 * 5000;
+
+  if (!sensorData[id].lastSaved) sensorData[id].lastSaved = 0;
+
+  if (now - sensorData[id].lastSaved >= rec_time) {
+    try {
+      // 🔥 แก้ตรงนี้ — ใช้ addDoc กับ collection reference
+      const sensorDataCollection = collection(db, 'sensor', id, 'data');
+
+      await addDoc(sensorDataCollection, {
+        distance: sensorData[id].distance,
+        humidity: sensorData[id].humidity,
+        temperature: sensorData[id].temperature,
+        ldr: sensorData[id].ldr,
+        pH: sensorData[id].pH,
+        isFlowing: sensorData[id].isFlowing,
+        pumpState: sensorData[id].pumpState,
+        timestamp: new Date().toISOString()
+      });
+
+      sensorData[id].lastSaved = now;
+      console.log(`✔️ Firestore saved for [${id}]`);
+    } catch (error) {
+      console.error(`❌ Error saving to Firestore for [${id}]:`, error);
+    }
+  } else {
+    console.log(`⏱ Skipped Firestore save for [${id}] (<5 min)`);
+  }
+};
+
 
 // เปลี่ยนสถานะปั๊มของ ESP32 ที่ระบุ
 export const togglePump = async (req, res) => {
@@ -121,14 +166,16 @@ export const togglePump = async (req, res) => {
     res.json({ success: true });
   };
 
+
 // รับข้อมูลของ ESP32 ตาม ID
 export const getDataById = async (req, res) => {
-    const id = req.params.id;
-    if (sensorData[id]) {
-      res.json(sensorData[id]);
-    } else {
-      res.status(404).json({ error: 'Sensor ID not found' });
-    }
-  };
+  const id = req.params.id;
+  if (sensorData[id]) {
+    res.json({ id, ...sensorData[id] }); 
+  } else {
+    res.status(404).json({ error: 'Sensor ID not found' });
+  }
+};
+
 
 

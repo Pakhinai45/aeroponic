@@ -1,7 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";  // ใช้ React Router สำหรับการเปลี่ยนหน้า
-import "./Sidebar.css";  
+import { Link } from "react-router-dom"; 
+import style from "./Sidebar.module.css";  
 import { useUser } from "../../UserContext";
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import ContactMailIcon from '@mui/icons-material/ContactMail';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
 function Sidebar() {
   
@@ -10,68 +17,68 @@ function Sidebar() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // ลบ token
-    window.location.href = "/"; // กลับไปหน้าแรก
+    localStorage.removeItem("token");
+    window.location.href = "/"; 
   };
 
   return (
-    <div className="sidebar">
-      <div className="sidebar-header">
+    <div className={style.sidebar}>
+      <div className={style.sidebar_header}>
         <h2>Aeroponic</h2>
       </div>
-      <ul className="sidebar-menu">
-        <li className="sidebar-item">
-          <Link to="/dashboard" className="sidebar-link">Dashboard</Link>
+
+      {/* เมนูหลัก */}
+      <ul className={style.sidebar_menu}>
+        <li className={style.sidebar_item}>
+          <Link to="/dashboard" className={style.sidebar_link}><DashboardIcon/>Dashboard</Link>
         </li>
-        <li className="sidebar-item">
-          <Link to="/historical" className="sidebar-link">Historical Data</Link>
+        <li className={style.sidebar_item}>
+          <Link to="/historical" className={style.sidebar_link}><AssessmentIcon/>Historical Data</Link>
         </li>
 
-        {/* แสดงเมนูเฉพาะที่เหมาะสม */}
         {userData?.status === 0 && (
-          <li className="sidebar-item">
-            <Link to="/useradmin" className="sidebar-link">Admin</Link>
+          <li className={style.sidebar_item}>
+            <Link to="/useradmin" className={style.sidebar_link}><DriveFileRenameOutlineIcon/>Admin</Link>
           </li>
         )}
 
         {userData?.status === 1 && (
-          <li className="sidebar-item">
-            <Link to="/useradmin" className="sidebar-link">Admin</Link>
+          <li className={style.sidebar_item}>
+            <Link to="/useradmin" className={style.sidebar_link}><DriveFileRenameOutlineIcon/>Admin</Link>
           </li>
         )}
 
         {userData?.status === 2 && (
           <>
-            <li className="sidebar-item">
-              <Link to="/adminrequest" className="sidebar-link">Admin Request</Link>
+            <li className={style.sidebar_item}>
+              <Link to="/adminrequest" className={style.sidebar_link}><ContactMailIcon/>Admin Request</Link>
             </li>
-            <li className="sidebar-item">
-              <Link to="/manageadmin" className="sidebar-link">Manage Admin</Link>
+            <li className={style.sidebar_item}>
+              <Link to="/manageadmin" className={style.sidebar_link}><ManageAccountsIcon/>Manage Admin</Link>
             </li>
           </>
         )}
 
-        <li className="sidebar-item">
-          <Link to="/profile" className="sidebar-link">Profile</Link>
-        </li>
-
-        <li className="sidebar-item" onClick={() => setShowLogoutModal(true)}>
-          <Link className="sidebar-link">SignOut</Link>
+        <li className={style.sidebar_item}>
+          <Link to="/profile" className={style.sidebar_link}><AccountBoxIcon/>Profile</Link>
         </li>
       </ul>
 
+      <div className={style.logout_container} onClick={() => setShowLogoutModal(true)}>
+        <Link className={style.sidebar_link}><LogoutIcon/>SignOut</Link>
+      </div>
+
+
       {/* Logout Modal */}
       {showLogoutModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
+        <div className={style.modal_overlay}>
+          <div className={style.modal_content}>
             <p>ต้องการออกจากระบบใช่ไหม?</p>
-            <button onClick={handleLogout} className="confirm-btn">ตกลง</button>
-            <button onClick={() => setShowLogoutModal(false)} className="cancel-btn">ยกเลิก</button>
+            <button onClick={handleLogout} className={style.confirm_btn}>ตกลง</button>
+            <button onClick={() => setShowLogoutModal(false)} className={style.cancel_btn}>ยกเลิก</button>
           </div>
         </div>
       )}
-
-
     </div>
   );
 }

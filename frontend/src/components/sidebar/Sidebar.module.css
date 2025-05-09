@@ -1,0 +1,132 @@
+/* CSS สำหรับ Sidebar */
+.sidebar {
+  height: 100vh;
+  width: 200px;
+  background-color: #111827;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* ทำให้เมนูอยู่บน, logout อยู่ล่าง */
+  padding: 20px 0;
+  position: fixed;
+  align-items: center;
+}
+
+  .sidebar_header h2 {
+    color: #3498db;
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+  
+  .sidebar_menu {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .sidebar_item {
+    margin-bottom: 30px;
+  }
+  
+  .sidebar_link {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    transition: 0.3s;
+  }
+  
+  .sidebar_link .icon {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+  
+  .sidebar_link:hover {
+    color: #3498db;
+  }
+  
+  .sidebar_link:active {
+    color: #ecf0f1;
+  }
+
+
+  /*  */
+  .modal_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999; 
+  }
+  
+  .modal_content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    color: black;
+    position: relative;
+    z-index: 10000; /* ให้ modal อยู่เหนือ overlay */   
+  }
+  
+  .confirm_btn {
+    background: red;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+  }
+  
+  .cancel_btn {
+    background: gray;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+  }
+  
+  
+  body.modal_open {
+    overflow: hidden; /* ป้องกันการเลื่อนหน้าจอ */
+  }
+  
+  .content_container {
+    pointer-events: none; /* ปิดการกดเนื้อหาด้านหลัง */
+  }
+
+  /*  */
+  .sidebar_header{
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    width: 80%;
+    margin-bottom: 20px;
+  }
+
+  .sidebar_menu {
+    flex-grow: 1;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .logout_container {
+    padding: 20px;
+    border-top: 2px solid rgba(255, 255, 255, 0.1); 
+    width: 80%;
+    cursor: pointer;
+  }
+
+  .logout_container:hover .sidebar_link {
+    color: #3498db;
+  }
+
+  .sidebar_link svg {
+    margin-right: 10px;
+  }
+  
+  

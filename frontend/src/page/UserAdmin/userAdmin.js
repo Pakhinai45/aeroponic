@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../../components/navbar/navbar";
 import Sidebar from "../../components/sidebar/Sidebar";
 import "./userAdmin.css";
 import { useUser } from "../../UserContext";
@@ -81,9 +80,6 @@ function UserAdmin() {
         <Sidebar />
       </div>
       <div className="content-useradmin">
-        <div className="navbar">
-          <Navbar />
-        </div>
         <div className="detel-useradmin">
           <h1>Submit a request to become an administrator</h1>
           

@@ -2,7 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getAuth , signInWithEmailAndPassword } from "firebase/auth";
 import {getFirestore} from "firebase/firestore";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAHb7c71eD80O8pF-l3JFqXiNaqMZb6xDI",
   authDomain: "aeroponics-e15b0.firebaseapp.com",
