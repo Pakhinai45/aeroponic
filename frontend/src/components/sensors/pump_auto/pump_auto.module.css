@@ -1,0 +1,105 @@
+.autoContainer {
+  width: 1320px;
+  height: 560px;
+  right: -220px;
+  top: -210px;
+  background-color: #1F2937;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  position: absolute;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; 
+}
+
+.closeButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #ff5c5c;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.list {
+  display: grid;
+  grid-row: 1;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.card {
+  color: white;
+  background-color: #374151;
+  border-radius: 10px;
+  border: 2px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 100%;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.formOverlay {
+  position: fixed;
+  top: 0px;
+  left: 60px;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.formContainer {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: 320px;
+  max-height: 60vh;
+  overflow-y: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.formContainer label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.formContainer input,
+.formContainer select {
+  width: 100%;
+  padding: 0.4rem;
+  margin-top: 5px;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.buttonGroup button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}

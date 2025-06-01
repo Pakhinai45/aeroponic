@@ -1,15 +1,17 @@
-import React, { useState } from "react";
-import "./styles.css";
+import React , { useState } from "react";
+import style from "./signInAndSignUp.module.css";
+
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, IconButton, Typography } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, IconButton, Typography, TextField } from '@mui/material';
 import { Close } from '@mui/icons-material';
+import classNames from "classnames";
 
 function SignUpForm() {
   const [formData, setFormData] = useState({
     name: "",
-    phon: "",
+    phone: "",
     email: "",
     password: "",
     confirmPassword: ""
@@ -17,7 +19,6 @@ function SignUpForm() {
 
   const [openDialog, setOpenDialog] = useState(false);
   
-
   const openConfirmSingup = () => {
     setOpenDialog(true);
   };
@@ -33,23 +34,25 @@ function SignUpForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ตรวจสอบว่ามีช่องใดว่างหรือไม่
+    // ตรวจสอบว่ามีช่องว่างหรือไม่
     for (const field in formData) {
       if (!formData[field]) {
-        toast.warn(`กรุณากรอกข้อมูลในช่อง ${field === 'name' ? 'Name' : field === 'phon' ? 'Phone' : field === 'email' ? 'Email' : field === 'password' ? 'Password' : 'Confirm Password'}`, { theme: "colored" });
-        return; // หากพบช่องว่างให้หยุดและแสดงข้อความเตือน
+        toast.warn(`Please fill in the ${ field === 'name' ? 'Name' : field === 'phone' ? 'Phone' : 
+                                          field === 'email' ? 'Email' : field === 'password' ? 'Password' : 'Confirm Password'} field.`, { theme: "colored" });
+        return;
       }
     }
 
-    // ตรวจสอบเบอร์โทรว่าเป็น 10 หลักหรือไม่
-    if (formData.phon.length !== 10) {
-      toast.warn("กรุณากรอกเบอร์โทรให้ครบ 10 หลัก", { theme: "colored" });
+    // ตรวจสอบเบอร์โทร
+    if (!/^0\d{9}$/.test(formData.phone)) {
+      toast.warn("Please enter a valid 10-digit", { theme: "colored" });
       return;
     }
 
+
     // ตรวจสอบว่า password และ confirmPassword ตรงกันหรือไม่
     if (formData.password !== formData.confirmPassword) {
-      toast.warn("รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน", { theme: "colored" });
+      toast.warn("Password and Confirm Password do not match.", { theme: "colored" });
       return;
     }
 
@@ -64,59 +67,108 @@ function SignUpForm() {
       console.log("Response:", response.data);
 
       if (response.status === 200) {
-        toast.success(response.data.message || "🎉 สมัครบัญชีสำเร็จ!", { theme: "colored" });
-        setFormData({ name: "", phon: "", email: "", password: "", confirmPassword: "" });
+        toast.success(response.data.message , { theme: "colored" });
+        setFormData({ name: "", phone: "", email: "", password: "", confirmPassword: "" });
         closeConfirmSingup();
       } else {
-        toast.error("❌ " + (response.data.message || "เกิดข้อผิดพลาด"));
+        toast.error("❌" + (response.data.message || "Error"));
       }
     } catch (error) {
-      toast.error("❌This email has already been used.");
+      toast.error("This email has already been used.");
     }
   };
 
   return (
-    <div className="form-container sign-up-container">
+    <div className={classNames(style.formContainer , style.signUpContainer)}>
       <form>
-        <h1 className="texth1-InUp">Create Account</h1>
-        <div className="social-container">
-        </div>
-        <input
+        <h1 className={style.texth1InUp}>Create Account</h1>
+        <TextField
           type="text"
           name="name"
+          fullWidth
           value={formData.name}
           onChange={handleChange}
-          placeholder="Name"
+          label="Name"
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              height: 40, 
+            },
+            '& .MuiInputLabel-root': {
+              top: '-5px', 
+            },
+              mb:2,
+          }}
         />
-        <input
+
+        <TextField
           type="text"
-          name="phon"
-          value={formData.phon}
+          name="phone"
+          fullWidth
+          value={formData.phone}
           onChange={handleChange}
-          placeholder="Phone"
+          label="Phone"
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              height: 40, 
+            },
+            '& .MuiInputLabel-root': {
+              top: '-5px', 
+            },
+              mb:2,
+          }}
         />
-        <input
+        <TextField
           type="email"
           name="email"
+          fullWidth
           value={formData.email}
           onChange={handleChange}
-          placeholder="Email"
+          label="Email"
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              height: 40, 
+            },
+            '& .MuiInputLabel-root': {
+              top: '-5px', 
+            },
+              mb:2,
+          }}
         />
-        <input
+        <TextField
           type="password"
           name="password"
+          fullWidth
           value={formData.password}
           onChange={handleChange}
-          placeholder="Password"
+          label="Password"
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              height: 40, 
+            },
+            '& .MuiInputLabel-root': {
+              top: '-5px', 
+            },
+              mb:2,
+          }}
         />
-        <input
+        <TextField
           type="password"
           name="confirmPassword"
+          fullWidth
           value={formData.confirmPassword}
           onChange={handleChange}
-          placeholder="Confirm Password"
+          label="Confirm Password"
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              height: 40, 
+            },
+            '& .MuiInputLabel-root': {
+              top: '-5px', 
+            },
+              mb:1,
+          }}
         />
-        <button className="btn-InUp" onClick={handleSubmit}>Sign Up</button>
+        <button className={style.btnInUp} onClick={handleSubmit}>Sign Up</button>
       </form>
 
       {/* Dialog for confirmation */}
@@ -129,14 +181,43 @@ function SignUpForm() {
         </Box>
         <DialogContent>
           <Typography>Name: {formData.name}</Typography>
-          <Typography>Phone: {formData.phon}</Typography>
+          <Typography>Phone: {formData.phone}</Typography>
           <Typography>Email: {formData.email}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button class="button-cancel-email"  variant="contained" onClick={closeConfirmSingup}>
+          <Button 
+            variant="contained" 
+            onClick={closeConfirmSingup}
+            sx={{
+              backgroundColor: '#830000',
+              color: 'white',
+              borderRadius: '20px',
+              padding: '10px 20px',
+              fontSize: '14px',
+              boxShadow: 'none',
+              '&:hover': {
+                backgroundColor: '#b41515'
+              }
+            }}
+          >
             Cancel
           </Button>
-          <Button class="button-confirm-email" variant="contained" onClick={handleConfirm}>
+
+          <Button 
+            variant="contained" 
+            onClick={handleConfirm}
+            sx={{
+              backgroundColor: '#1D3322',
+              color: 'white',
+              borderRadius: '20px',
+              padding: '10px 20px',
+              fontSize: '14px',
+              boxShadow: 'none',
+              '&:hover': {
+                backgroundColor: '#0d9719'
+              }
+            }}
+          >
             Confirm
           </Button>
         </DialogActions>

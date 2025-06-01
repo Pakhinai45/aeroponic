@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import "./styles.css";
+import style from "./signInAndSignUp.module.css";
+
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../../AuthContext.js";
 import axios from "axios";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, IconButton, TextField, CircularProgress } from '@mui/material';
 import { Close } from '@mui/icons-material';
+import classNames from "classnames";
 
 function SignInForm() {
   const [formData, setFormData] = useState({
@@ -15,7 +17,7 @@ function SignInForm() {
 
   const { setUid } = useAuth();
   const [openDialog, setOpenDialog] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);  // สถานะโหลด
+  const [isLoading, setIsLoading] = useState(false);  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,7 +26,7 @@ function SignInForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setIsLoading(true);  // เริ่มโหลด
+    setIsLoading(true);  
 
     try {
       const response = await axios.post("http://localhost:3300/api/users/login", {
@@ -43,7 +45,7 @@ function SignInForm() {
     } catch (error) {
       toast.error("Email or password is incorrect.", { theme: "colored" });
     } finally {
-      setIsLoading(false);  // หยุดโหลด
+      setIsLoading(false);  
     }
   };
 
@@ -72,29 +74,35 @@ function SignInForm() {
         toast.error("Error: " + response.data.message, { theme: "colored" });
       }
     } catch (error) {
-      toast.error("เกิดข้อผิดพลาดในการส่งคำขอ: " + error.message, { theme: "colored" });
+      toast.error("There was an error sending the request.: " + error.message, { theme: "colored" });
     }
   };
 
   return (
-    <div className="form-container sign-in-container">
+    <div className={classNames(style.formContainer,style.signInContainer)}>
       <form onSubmit={handleSubmit}>
-        <h1 className="texth1-InUp">Login</h1>
-        <input
+        <h1 className={style.texth1InUp}>Login</h1>
+        <TextField
           type="email"
-          placeholder="Email"
+          label="Email"
           name="email"
+          fullWidth
+          variant="outlined"
+          sx={{mb:2}}
           onChange={handleChange}
         />
-        <input
+        <TextField
           type="password"
           name="password"
-          placeholder="Password"
+          label="Password"
+          fullWidth
+          variant="outlined"
+          sx={{mb:2}}
           onChange={handleChange}
         />
         
-        {/* ปรับปุ่มให้มี CircularProgress */}
-        <button className="btn-InUp" disabled={isLoading}>
+        {/*CircularProgress */}
+        <button className={style.btnInUp} disabled={isLoading}>
           {isLoading ? (
             <CircularProgress size={24} style={{ color: "#fff", marginRight: 8 }} />
           ) : (
@@ -102,7 +110,7 @@ function SignInForm() {
           )}
         </button>
         
-        <p onClick={openForgotPassword} className="forgot-password">
+        <p onClick={openForgotPassword} className={style.forgotPassword}>
           Forgot your password?
         </p>
       </form>
@@ -121,15 +129,45 @@ function SignInForm() {
             fullWidth
             variant="outlined"
             name="email"
+            type="email"
             value={formData.email}
             onChange={handleChange}
           />
         </DialogContent>
         <DialogActions>
-          <Button class="button-cancel-email" variant="contained" onClick={closeForgotPassword}>
+          <Button
+            variant="contained"
+            onClick={closeForgotPassword}
+            sx={{
+              backgroundColor: '#830000',
+              color: 'white',
+              borderRadius: '20px',
+              padding: '10px 20px',
+              fontSize: '14px',
+              boxShadow: 'none',
+              '&:hover': {
+                backgroundColor: '#b41515'
+              }
+            }}
+          >
             Cancel
           </Button>
-          <Button class="button-confirm-email" variant="contained" onClick={handleForgotPassword}>
+
+          <Button
+            variant="contained"
+            onClick={handleForgotPassword}
+            sx={{
+              backgroundColor: '#1D3322',
+              color: 'white',
+              borderRadius: '20px',
+              padding: '10px 20px',
+              fontSize: '14px',
+              boxShadow: 'none',
+              '&:hover': {
+                backgroundColor: '#0d9719'
+              }
+            }}
+          >
             Confirm
           </Button>
         </DialogActions>

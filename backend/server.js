@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 
 import userRoutes from './routes/userRoutes.js';
 import sensorRoutes from './routes/sensorRoutes.js'; 
+import './schedulers/autoScheduler.js';
 
 dotenv.config();
 

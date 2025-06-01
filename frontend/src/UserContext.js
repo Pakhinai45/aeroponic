@@ -14,7 +14,7 @@ export const UserProvider = ({ children }) => {
       fetch(`http://localhost:3300/api/users/getUser/${uid}`)
         .then(res => res.json())
         .then(data => setUserData(data.user))
-        .catch(error => console.error("Fetch Error:", error));
+        .catch(error => console.error("Fetch Error:", error)); 
     }
   }, [uid]);
 

@@ -36,25 +36,25 @@ function Sidebar() {
           <Link to="/historical" className={style.sidebar_link}><AssessmentIcon/>Historical Data</Link>
         </li>
 
-        {userData?.status === 0 && (
+        {userData?.user_status === 0 && (
           <li className={style.sidebar_item}>
             <Link to="/useradmin" className={style.sidebar_link}><DriveFileRenameOutlineIcon/>Admin</Link>
           </li>
         )}
 
-        {userData?.status === 1 && (
+        {userData?.user_status === 1 && (
           <li className={style.sidebar_item}>
             <Link to="/useradmin" className={style.sidebar_link}><DriveFileRenameOutlineIcon/>Admin</Link>
           </li>
         )}
 
-        {userData?.status === 2 && (
+        {userData?.user_status === 2 && (
           <>
             <li className={style.sidebar_item}>
-              <Link to="/adminrequest" className={style.sidebar_link}><ContactMailIcon/>Admin Request</Link>
+              <Link to="/adminrequest" className={style.sidebar_link}><ContactMailIcon/>User Request</Link>
             </li>
             <li className={style.sidebar_item}>
-              <Link to="/manageadmin" className={style.sidebar_link}><ManageAccountsIcon/>Manage Admin</Link>
+              <Link to="/manageadmin" className={style.sidebar_link}><ManageAccountsIcon/>User Management</Link>
             </li>
           </>
         )}

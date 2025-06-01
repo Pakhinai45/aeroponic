@@ -1,0 +1,11 @@
+.title{
+  position: absolute;
+  margin-top: 3px;
+  font-size: 16px;
+  margin-left: 190px;
+  font-weight: bold;
+  color: #F4F5F6;
+  top: 280px;
+  right: -70px;
+  white-space: nowrap;
+}

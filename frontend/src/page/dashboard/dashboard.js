@@ -9,6 +9,10 @@ import { FaSeedling } from "react-icons/fa";
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Dialog, DialogTitle, DialogContent, DialogActions, IconButton,  } from '@mui/material';
+import { Close } from '@mui/icons-material';
 
 import Sidebar from "../../components/sidebar/Sidebar";
 import style from "./dashboard.module.css";
@@ -17,9 +21,10 @@ import Humidity from "../../components/sensors/humidity/humidity";
 import Light from "../../components/sensors/light/light";
 import PH from "../../components/sensors/ph/ph";
 import Temperature from "../../components/sensors/temper/temper";
-import ControSwitch from "../../components/sensors/contro_switch/contro_switch";
 import WaterLevel from "../../components/sensors/water/water";
-import PumpTime from "../../components/sensors/pump_time/pump_time"
+import Pump from "../../components/sensors/pump/pump";
+import RealtimeGraph from "../../components/sensors/graph/graph";
+import PumpStatus from "../../components/sensors/pump_status/pump_status";
 
 
 const CustomGrid = ({ size, height, children, rowGap }) => (
@@ -41,38 +46,47 @@ const CustomGrid = ({ size, height, children, rowGap }) => (
 
 function Dashboard() {
   const [sensorList, setSensorList] = useState([]);
-  const [sensorId, setSensorId] = useState("");
+  const [pid, setPid] = useState("");
 
-  const [inputId, setInputId] = useState("");
+  const [inputPid, setInputPid] = useState("");
   const [inputName, setInputName] = useState("");
   const [inputVegName, setInputVegName] = useState("");
   const [inputLocation, setInputLocation] = useState("");
 
   const [sensorData, setSensorData] = useState(null);
-  const [showAddSensorModel , setshowAddSensorModel] = useState(false);
-  const selectedSensor = sensorList.find(sensor => sensor.id === sensorId);
+  const selectedSensor = sensorList.find(sensor => sensor.id === pid);
 
-  //
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const openAddSensor = () => {
+    setOpenDialog(true);
+  };
+
+  const closeAddSensor = () => {
+    setOpenDialog(false);
+  };
+
+  //ดึงข้อมูลแท่งปลูก
   useEffect(() => {
-    axios.get("http://localhost:3300/sensor-id")
+    axios.get("http://localhost:3300/sensor-pid")
       .then(res => {
-        if (res.data.sensors && res.data.sensors.length > 0) {
-          setSensorList(res.data.sensors);
-          setSensorId(res.data.sensors[0].id); 
+        if (res.data.plant_beds && res.data.plant_beds.length > 0) {
+          setSensorList(res.data.plant_beds);
+          setPid(res.data.plant_beds[0].pid); 
         }
       })
       .catch(err => console.error("Error loading sensor list:", err));
   }, []);
 
-  //
+  //ดึงข้อมูล sensor ตาม pid
   useEffect(() => {
-    if (!sensorId) return;
+    if (!pid) return;
 
     const fetchData = () => {
       axios
-        .get(`http://localhost:3300/sensor/${sensorId}`)
+        .get(`http://localhost:3300/sensor/${pid}`)
         .then((res) => {
-          if (res.data && res.data.id === sensorId) {
+          if (res.data && res.data.pid === pid) {
             setSensorData(res.data);
           } else {
             setSensorData(null);
@@ -85,45 +99,46 @@ function Dashboard() {
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 2000);
+    const interval = setInterval(fetchData, 1000);
     return () => clearInterval(interval);
-  }, [sensorId]);
+  }, [pid]);
 
 
   // เพิ่ม sensorId ใหม่
   const handleAddSensor = () => {
-    if (!inputId.trim() || !inputName.trim() || !inputVegName.trim() || !inputLocation.trim()) {
-      alert("กรุณากรอกข้อมูลให้ครบ");
+    if (!inputPid.trim() || !inputName.trim() || !inputVegName.trim() || !inputLocation.trim()) {
+      toast.warn(`Please fill in all information completely.`,{theme:"colored"});
       return;
     }
 
-    axios.post("http://localhost:3300/sensor-id", { 
-      sensorId: inputId,
-      name : inputName,
+    axios.post("http://localhost:3300/sensor-pid", { 
+      pid: inputPid,
+      beds_name : inputName,
       vegetableName : inputVegName,
       location : inputLocation,
     })
     .then(() => {
+      toast.success(`Save SensorId Successfuly`);
       //โหลดรายการ sensor ใหม่จาก backend
-      return axios.get("http://localhost:3300/sensor-id");
+      return axios.get("http://localhost:3300/sensor-pid");
     })
     .then((res) => {
-      if (res.data.sensors && res.data.sensors.length > 0) {
-        setSensorList(res.data.sensors);
-        setSensorId(inputId);
-        setInputId("");
+      if (res.data.plant_beds && res.data.plant_beds.length > 0) {
+        setSensorList(res.data.plant_beds);
+        setPid(inputPid);
+        setInputPid("");
         setInputName("");
         setInputVegName("");
         setInputLocation("");
-        setshowAddSensorModel(false);
+        closeAddSensor();
       }
     })
     .catch(err => {
       console.error("Error saving sensorId:", err);
       if (err.response?.data?.error === "Sensor ID already exists") {
-        alert("Sensor ID นี้ถูกใช้ไปแล้ว");
+        toast.warn(`This sensor ID is already used.`);
       } else { 
-        alert("ไม่มี Sensor ID ในระบบ");
+        toast.warn(`There is no Sensor ID in the system.`);
       }
     });
   };
@@ -142,15 +157,15 @@ function Dashboard() {
             <div style={{ marginBottom: "1rem", marginTop: "1rem", width: 250 }}>
               <Autocomplete
                 options={sensorList}
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option.beds_name}
                 value={selectedSensor || null}
                 onChange={(event, newValue) => {
-                  if (newValue) setSensorId(newValue.id);
+                  if (newValue) setPid(newValue.pid);
                 }}
                 renderOption={(props, option) => (
                   <li {...props} style={{ display: "flex", alignItems: "center", }}>
                     <FaSeedling style={{ marginRight: 8, color: "green" }} />
-                    {option.name}
+                    {option.beds_name}
                   </li>
                 )}
                 renderInput={(params) => (
@@ -165,42 +180,42 @@ function Dashboard() {
                        }, 
                     }}
                     InputLabelProps={{
-                      style: { color: "#aaaaaa" }, // ✅ สี label
+                      style: { color: "#aaaaaa" }, 
                     }}
                   />
                 )}
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     '& fieldset': {
-                      borderColor: '#70807F', // ✅ สีเส้นขอบปกติ
+                      borderColor: '#70807F', 
                     },
                     '&:hover fieldset': {
-                      borderColor: '#70807F', // ✅ ตอน hover
+                      borderColor: '#70807F', 
                     },
                     '&.Mui-focused fieldset': {
-                      borderColor: '#70807F', // ✅ ตอน focus
+                      borderColor: '#70807F', 
                     },
                   },
-                  borderRadius: 2, // เพิ่มมุมโค้ง
+                  borderRadius: 2, 
                 }}
               />
             </div>
           )}
 
           {selectedSensor && (
-            <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap", marginRight:"50px"}}>
-              <p><strong>Id :</strong> {selectedSensor.id}</p>
-              <p><strong>Name :</strong> {selectedSensor.name}</p>
+            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginRight:"20px"}}>
+              <p><strong>ID :</strong> {selectedSensor.pid}</p>
+              <p><strong>Name :</strong> {selectedSensor.beds_name}</p>
               <p><strong>Vegetable :</strong> {selectedSensor.vegetableName}</p>
               <p><strong>Location :</strong> {selectedSensor.location}</p>
-              <p><strong>Date :</strong> {new Date(selectedSensor.createdAt).toLocaleString()}</p>
+              <p><strong>Creation Date :</strong> {new Date(selectedSensor.createdAt).toLocaleString()}</p>
             </div>
           )}
 
           <Stack spacing={2} direction="row">
             <Button 
               variant="outlined" 
-              onClick={() => {setshowAddSensorModel(true)}}
+              onClick={openAddSensor}
               style={{
                 color:"#F4F5F6",
                 borderColor: "#F4F5F6",
@@ -209,48 +224,88 @@ function Dashboard() {
           </Stack>
         </div>
 
-        { showAddSensorModel && (
-          <div className={style.model_overlay}>
-            <div className={style.model_content}>
-            <p>เพิ่มเเท่งปลูก</p>
-            <input
+        {/*  */}
+        <Dialog open={openDialog} onClose={closeAddSensor} maxWidth="sm" fullWidth>
+          <DialogTitle>Add Sensor</DialogTitle>
+          <Box position="absolute" top={0} right={0}>
+            <IconButton onClick={closeAddSensor}>
+              <Close />
+            </IconButton>
+          </Box>
+          <DialogContent>
+            <TextField
+              label="SensorID(pid)"
+              fullWidth
               type="text"
-              placeholder="Input SensorID"
-              value={inputId}
-              onChange={(e) => setInputId(e.target.value)}
-              style={{ padding: "0.5rem"}}
+              value={inputPid}
+              onChange={(e) => setInputPid(e.target.value)}
+              sx={{mb:1}}
             />
-            <input
+            <TextField
+              label="Name"
+              fullWidth
               type="text"
-              placeholder="Input Name"
               value={inputName}
               onChange={(e) => setInputName(e.target.value)}
-              style={{ padding: "0.5rem"}}
+              sx={{mb:1}}
             />
-            <input
+            <TextField
+              label="Vegetable Name"
+              fullWidth
               type="text"
-              placeholder="Input Vegetable Name"
               value={inputVegName}
               onChange={(e) => setInputVegName(e.target.value)}
-              style={{ padding: "0.5rem"}}
+              sx={{mb:1}}
             />
-            <input
+            <TextField
+              label="Location"
+              fullWidth
               type="text"
-              placeholder="Input Location"
               value={inputLocation}
               onChange={(e) => setInputLocation(e.target.value)}
-              style={{ padding: "0.5rem"}}
+              sx={{mb:1}}
             />
-
-            <button onClick={handleAddSensor} className={style.confirm_btn}>ตกลง</button>
-            <button onClick={() => setshowAddSensorModel(false)} className={style.cancel_btn}>ยกเลิก</button>
-            </div>
-          </div>
-        )}
-
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              onClick={closeAddSensor}
+              sx={{
+                backgroundColor: '#830000',
+                color: 'white',
+                borderRadius: '20px',
+                padding: '10px 20px',
+                fontSize: '14px',
+                boxShadow: 'none',
+                '&:hover': {
+                  backgroundColor: '#b41515'
+                }
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleAddSensor}
+              sx={{
+                backgroundColor: '#1D3322',
+                color: 'white',
+                borderRadius: '20px',
+                padding: '10px 20px',
+                fontSize: '14px',
+                boxShadow: 'none',
+                '&:hover': {
+                  backgroundColor: '#0d9719'
+                }
+              }}
+            >
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         {/* แสดงข้อมูล sensor */}
-        {sensorId && sensorData ? (
+        {pid && sensorData ? (
           <Box sx={{ flexGrow: 2 }}>
             <Grid container spacing={1} >
 
@@ -290,22 +345,18 @@ function Dashboard() {
               </CustomGrid>
 
               <CustomGrid size={8} height={350}>
-
+                <div className={style.position_all}>
+                    <p className={style.title} style={{left:"-120px"}}></p>
+                    <RealtimeGraph data={sensorData}></RealtimeGraph>
+                  </div>
               </CustomGrid>
 
-              <Grid container item size={2} direction="column" spacing={1}>
-
-                <CustomGrid size={24} height={200}>
+              <Grid container size={2} direction="column" spacing={1}>
+                <CustomGrid size={24} height={350}>
                   <div className={style.position_all}>
-                    <p className={style.title} style={{left:"-120px"}}>Pump Time</p>
-                    <PumpTime data={sensorData}></PumpTime>
-                  </div>
-                </CustomGrid>
-                  
-                <CustomGrid size={24} height={140}>
-                  <div className={style.position_all}>
-                    <p className={style.title} style={{left:"-35px"}}>Switch</p>     
-                    <ControSwitch data={sensorData} />
+                    <p className={style.title} style={{left:"-200px"}}>Pump Configuration</p>
+                    <Pump data={sensorData}></Pump>
+                    <PumpStatus data={sensorData}></PumpStatus>
                   </div>
                 </CustomGrid>
               </Grid>

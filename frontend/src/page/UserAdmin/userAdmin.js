@@ -30,7 +30,7 @@ function UserAdmin() {
       console.log('API Response:', response.data);
       if (response.data.exists) {
         // console.log('statusRequest:', response.data.statusRequest);
-        setRequestStatus(response.data.statusRequest);
+        setRequestStatus(response.data.req_status);
       } else {
         setRequestStatus(null); 
       }
@@ -43,8 +43,8 @@ function UserAdmin() {
   const handleRequestAdmin = async () => {
 
     const requestData = {
-      name: userData.name,
-      phon: userData.phon,
+      user_name: userData.user_name,
+      phone: userData.phone,
       uid: uid,
     };
 
@@ -89,7 +89,7 @@ function UserAdmin() {
             </button>
           ) : requestStatus === 0 ? (
             <div>
-              <p>ส่งคำขอแล้ว ขอตรวจสอบการอนุมัติ</p> 
+              <p>ส่งคำขอแล้ว รอตรวจสอบการอนุมัติ</p> 
               <button onClick={cancelRequest}>ยกเลิกคำขอ</button>
             </div>
           ) : requestStatus === 1 ? (

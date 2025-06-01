@@ -1,10 +1,10 @@
 .switch {
-  position: relative;
+  position: absolute;
   display: inline-block;
   width: 80px;
   height: 34px;
-  top: 30px;
-  right: 100px;
+  top: 100px;
+  left: -35px;
 }
 
 /* ซ่อน input */
@@ -62,8 +62,8 @@ input:checked + .slider:before {
 /*  */
 .statusOff{
   position: absolute;
-  top: 38px;
-  left: -10px;
+  top: 88px;
+  right: 50px;
   font-size: 16px;
   font-weight: bold;
   color: #F4F5F6;
@@ -71,9 +71,25 @@ input:checked + .slider:before {
  
  .statusOn{
    position: absolute;
-   top: 38px;
-   left: 115px;
+   top: 88px;
+   left: 60px;
    font-size: 16px;
    font-weight: bold;
    color: #F4F5F6;
  }
+
+.warn{
+  color: white;
+  position: absolute;
+  white-space: nowrap;
+  top: 70px;
+  right: -130px;
+}
+
+.load{
+  color: white;
+  position: absolute;
+  white-space: nowrap;
+  top: 70px;
+  right: -50px;
+}

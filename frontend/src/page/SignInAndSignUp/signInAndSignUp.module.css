@@ -1,3 +1,10 @@
+body {
+  background-color: #1F2937;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
 .SignInAndSignUp {
     font-family: sans-serif;
     text-align: center;
@@ -23,7 +30,7 @@
     overflow: hidden;
   }
   
-  .texth1-InUp {
+  .texth1InUp {
     font-weight: bold;
     margin: -35px;
     margin-top: 5px;
@@ -31,7 +38,7 @@
     color: #1D3322;
   }
 
-  .texth1-InUpDetail{
+  .texth1InUpDetail{
     font-weight: bold;
     margin: -35px;
     margin-top: 5px;
@@ -64,7 +71,7 @@
 
 
   /* /////////////////////////////////////////////////////////////////////// */
-  .btn-InUp {
+  .btnInUp {
     border-radius: 20px;
     border: 1px solid #1D3322;
     background-color: #1D3322;
@@ -79,22 +86,29 @@
     cursor: pointer;
   }
   
-  .btn-InUp:active {
+  .btnInUp:active {
     transform: scale(0.95);
   }
   
-  .btn-InUp:focus {
+  .btnInUp:focus {
     outline: none;
   }
   
-  .btn-InUp.ghost {
+  .ghostBtnInUp {
     background-color: transparent;
     border-color: #ffffff;
+    border-radius: 20px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 12px 45px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 80ms ease-in;
+    margin-top: 50px;
+    cursor: pointer;
   }
 
-  /* .btn-InUp:hover{
-    
-  } */
   
   /* ///////////////////////////////////////////////////////////////////////// */
   form {
@@ -127,31 +141,31 @@
     min-height: 480px;
   }
   
-  .form-container {
+  .formContainer {
     position: absolute;
     top: 0;
     height: 100%;
     transition: all 0.6s ease-in-out;
   }
   
-  .sign-in-container {
+  .signInContainer {
     left: 0;
     width: 50%;
     z-index: 2;
   }
   
-  .container.right-panel-active .sign-in-container {
+  .container.right-panel-active .signInContainer {
     transform: translateX(100%);
   }
   
-  .sign-up-container {
+  .signUpContainer {
     left: 0;
     width: 50%;
     opacity: 0;
     z-index: 1;
   }
   
-  .container.right-panel-active .sign-up-container {
+  .container.right-panel-active .signUpContainer {
     transform: translateX(100%);
     opacity: 1;
     z-index: 5;
@@ -172,7 +186,7 @@
     }
   }
   
-  .overlay-container {
+  .overlayContainer {
     position: absolute;
     top: 0;
     left: 50%;
@@ -183,7 +197,7 @@
     z-index: 100;
   }
   
-  .container.right-panel-active .overlay-container {
+  .container.right-panel-active .overlayContainer {
     transform: translateX(-100%);
   }
   
@@ -207,7 +221,7 @@
     transform: translateX(50%);
   }
   
-  .overlay-panel {
+  .overlayPanel {
     position: absolute;
     display: flex;
     align-items: center;
@@ -222,28 +236,28 @@
     transition: transform 0.6s ease-in-out;
   }
   
-  .overlay-left {
+  .overlayLeft {
     transform: translateX(-20%);
   }
 
-  .overlay-left button {
+  .overlayLeftButton {
     margin-top: 50px; /* ปรับระยะห่างปุ่มลงมา */
   }
   
-  .container.right-panel-active .overlay-left {
+  .container.right-panel-active .overlayLeft {
     transform: translateX(0);
   }
   
-  .overlay-right {
+  .overlayRight {
     right: 0;
     transform: translateX(0);
   }
 
-  .overlay-right button {
+  .overlayRightButton {
     margin-top: 50px; /* ปรับระยะห่างปุ่มลงมา */
   }
   
-  .container.right-panel-active .overlay-right {
+  .container.right-panel-active .overlayRight {
     transform: translateX(20%);
   }
    
@@ -272,36 +286,7 @@
     text-decoration: none;
   }
   
-  .forgot-password{
+  .forgotPassword{
     color: #222;
     cursor: pointer;
   }
-
-  /* กำหนด class สำหรับปุ่ม */
-.button-confirm-email {
-  background-color: #1D3322; /* สีพื้นหลัง */
-  color: white; /* สีตัวอักษร */
-  border: none; /* ไม่มีขอบ */
-  padding: 10px 20px; /* ขนาดปุ่ม */
-  font-size: 16px; /* ขนาดตัวอักษร */
-  border-radius: 20px; /* มุมโค้ง */
-  cursor: pointer;
-}
-
-.button-confirm-email:hover {
-  background-color: #0d9719; /* สีพื้นหลังเมื่อเมาส์วาง */
-}
-
-.button-cancel-email {
-  background-color: #830000; /* สีพื้นหลัง */
-  color: white; /* สีตัวอักษร */
-  border: none; /* ไม่มีขอบ */
-  padding: 10px 20px; /* ขนาดปุ่ม */
-  font-size: 16px; /* ขนาดตัวอักษร */
-  border-radius: 20px; /* มุมโค้ง */
-  cursor: pointer;
-}
-
-.button-cancel-email:hover {
-  background-color: #b41515; /* สีพื้นหลังเมื่อเมาส์วาง */
-}

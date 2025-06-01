@@ -6,7 +6,9 @@ import cloud from "../../../icons/cloud.png";
 import moon from "../../../icons/half-moon.png";
 
 const Light = ({ data }) => {
-  // ฟังก์ชันแปลงค่า LDR เป็นระดับแสง
+  
+  const lightPercent = Math.round((1 - data.ldr / 4095)*100);
+
   const getLightLevel = (value) => {
     if (value < 1024) {
       return { label: "Sunny", icon: sun };
@@ -29,7 +31,7 @@ const Light = ({ data }) => {
     <div className={style.lightContainer}>
       <img src={lightInfo.icon} alt={lightInfo.label} className={style.setImg} />
       <p className={style.lightText}>{lightInfo.label}</p>
-      <p className={style.lightValue}>value : {data.ldr}</p>
+      <p className={style.lightValue}>value : {lightPercent}%</p>
     </div>
   );
 };

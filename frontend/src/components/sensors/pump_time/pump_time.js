@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import style from './pump_time.module.css'
 
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded';

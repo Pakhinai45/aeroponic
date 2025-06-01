@@ -32,7 +32,7 @@ router.get('/adminRequestsAll',adminRequestsAll);
 router.post('/approveAdmin/:uid', approveAdmin);
 router.post('/refuseAdmin/:uid', refuseAdmin);
 router.get('/getUser',getUser);
-router.put('/updateUser/:id',updateUser);
-router.delete('/deleteUser/:id',deleteUser);
+router.put('/updateUser/:uid',updateUser);
+router.delete('/deleteUser/:uid',deleteUser);
 
 export default router;
