@@ -3,9 +3,10 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
+
 import userRoutes from './routes/userRoutes.js';
-import sensorRoutes from './routes/sensorRoutes.js'; 
-import './schedulers/autoScheduler.js';
+import sensorRoutes from './routes/sensorRoutes.js';
+// import './schedulers/autoScheduler.js';
 
 dotenv.config();
 
@@ -15,8 +16,8 @@ const PORT = 3300;
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use('/api/users',userRoutes);
 app.use(sensorRoutes);
+app.use(userRoutes);
 
 
 app.listen(PORT, () => {

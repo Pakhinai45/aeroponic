@@ -11,13 +11,10 @@ import Profile from "./page/Profile/profile.js";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { AuthProvider } from "./AuthContext.js";
-import { UserProvider } from "./UserContext.js"
+
 
 function App() {
   return (
-    <AuthProvider>
-      <UserProvider>
       <Router>
         <ToastContainer position="top-center" autoClose={3000} />
         <Routes>
@@ -30,8 +27,6 @@ function App() {
           <Route path='/' element={<SignInAndSignUp/>}></Route>
         </Routes>
       </Router>
-      </UserProvider>
-    </AuthProvider>
   );
 }
 

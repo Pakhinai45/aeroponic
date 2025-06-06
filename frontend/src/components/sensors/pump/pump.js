@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import style from "./pump.module.css";
 import axios from "axios";
 
@@ -13,8 +13,11 @@ const Pump = ({ data }) => {
     const fetchMode = async () => {
       try {
         const res = await axios.get(`http://localhost:3300/getPumpMode/${data.pid}`);
-        if (res.data && res.data.mode) {
-          setMode(res.data.mode);
+        // console.log("mode:",res.data);
+        
+        if (Array.isArray(res.data) && res.data.length > 0) {
+          console.log("🔥 mode from API:", res.data[0].mode);
+          setMode(res.data[0].mode);
         }
       } catch (error) {
         console.error("Failed to fetch pump mode:", error);

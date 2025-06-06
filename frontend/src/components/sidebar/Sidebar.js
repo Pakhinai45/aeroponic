@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import { useState,useEffect } from "react";
 import { Link } from "react-router-dom"; 
+import { jwtDecode } from "jwt-decode";
 import style from "./Sidebar.module.css";  
-import { useUser } from "../../UserContext";
+
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -12,9 +13,17 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 
 function Sidebar() {
   
-  const {userData} = useUser();
-  
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded = jwtDecode(token);
+      setUserData(decoded);
+      console.log("data:", decoded);
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -36,31 +45,31 @@ function Sidebar() {
           <Link to="/historical" className={style.sidebar_link}><AssessmentIcon/>Historical Data</Link>
         </li>
 
-        {userData?.user_status === 0 && (
+        {userData?.user_status === "0" && (
           <li className={style.sidebar_item}>
-            <Link to="/useradmin" className={style.sidebar_link}><DriveFileRenameOutlineIcon/>Admin</Link>
+            <Link to="/useradmin" state={{ userData }} className={style.sidebar_link}><DriveFileRenameOutlineIcon/>Admin</Link>
           </li>
         )}
 
-        {userData?.user_status === 1 && (
+        {userData?.user_status === "1" && (
           <li className={style.sidebar_item}>
-            <Link to="/useradmin" className={style.sidebar_link}><DriveFileRenameOutlineIcon/>Admin</Link>
+            <Link to="/useradmin" className={style.sidebar_link}><DriveFileRenameOutlineIcon data={userData}/>Admin</Link>
           </li>
         )}
 
-        {userData?.user_status === 2 && (
+        {userData?.user_status === "2" && (
           <>
             <li className={style.sidebar_item}>
               <Link to="/adminrequest" className={style.sidebar_link}><ContactMailIcon/>User Request</Link>
             </li>
             <li className={style.sidebar_item}>
-              <Link to="/manageadmin" className={style.sidebar_link}><ManageAccountsIcon/>User Management</Link>
+              <Link to="/manageadmin" state={{ userData }} className={style.sidebar_link}><ManageAccountsIcon/>User Management</Link>
             </li>
           </>
         )}
 
         <li className={style.sidebar_item}>
-          <Link to="/profile" className={style.sidebar_link}><AccountBoxIcon/>Profile</Link>
+          <Link to="/profile" state={{ userData }} className={style.sidebar_link}><AccountBoxIcon/>Profile</Link>
         </li>
       </ul>
 

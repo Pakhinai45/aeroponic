@@ -1,14 +1,16 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import style from "./pump_auto.module.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const PumpAuto = ({ data, onClose }) => {
+  // console.log("pid:",data?.pid);
+  
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
-    onTime: "",
-    offTime: "",
+    on_time: "",
+    off_time: "",
     day: "Monday",
   });
 
@@ -28,7 +30,7 @@ const PumpAuto = ({ data, onClose }) => {
   const fetchSchedules = useCallback(async () => {
     try {
       const response = await axios.get(`http://localhost:3300/getSchedules/${data.pid}`);
-      setSchedules(response.data.schedules);
+      setSchedules(response.data);
     } catch (error) {
       console.error("Error fetching schedules:", error);
     }
@@ -42,8 +44,8 @@ const PumpAuto = ({ data, onClose }) => {
   const openAddForm = () => {
     setEditingScheduleId(null);
     setFormData({
-      onTime: "",
-      offTime: "",
+      on_time: "",
+      off_time: "",
       day: "Monday",
     });
     setShowForm(true);
@@ -51,10 +53,10 @@ const PumpAuto = ({ data, onClose }) => {
 
   // เปิดฟอร์มแก้ไขโดยเอาข้อมูลเดิมมาแสดง
   const openEditForm = (schedule) => {
-    setEditingScheduleId(schedule.id);
+    setEditingScheduleId(schedule.tid);
     setFormData({
-      onTime: schedule.onTime,
-      offTime: schedule.offTime,
+      on_time: schedule.on_time,
+      off_time: schedule.off_time,
       day: schedule.day,
     });
     setShowForm(true);
@@ -62,21 +64,22 @@ const PumpAuto = ({ data, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { onTime, offTime, day } = formData;
+    const { on_time, off_time, day } = formData;
 
     try {
       if (editingScheduleId) {
+       
         // แก้ไข
         await axios.put(
-          `http://localhost:3300/updateSchedule/${data.pid}/${editingScheduleId}`,
-          { onTime, offTime, day }
+          `http://localhost:3300/updateSchedule/${editingScheduleId}`,
+          { on_time, off_time, day }
         );
         toast.success(`Edit Successfuly`);
       } else {
         // เพิ่มใหม่
-        await axios.post(`http://localhost:3300/saveSchedules/${data.pid}/schedules`, {
-          onTime,
-          offTime,
+        await axios.post(`http://localhost:3300/saveSchedule/${data.pid}`, {
+          on_time,
+          off_time,
           day,
         });
         toast.success(`Ste Time Successfuly`);
@@ -91,11 +94,13 @@ const PumpAuto = ({ data, onClose }) => {
   };
 
   // ฟังก์ชันลบ
-  const handleDelete = async (scheduleId) => {
+  const handleDelete = async (tid) => {
+    // console.log("scheduleId:",tid);
+    
     if (!window.confirm("ต้องการลบเวลานี้จริงหรือไม่?")) return;
 
     try {
-      await axios.delete(`http://localhost:3300/deleteSchedule/${data.pid}/${scheduleId}`);
+      await axios.delete(`http://localhost:3300/deleteSchedule/${tid}`);
       toast.success(`Delete Successfuly`);
       await fetchSchedules();
     } catch (error) {
@@ -115,15 +120,15 @@ const PumpAuto = ({ data, onClose }) => {
         </div>
         {schedules.length > 0 ? (
           schedules.map((schedule) => (
-            <div key={schedule.id} className={style.card} style={{ position: "relative" }}>
+            <div key={schedule.tid} className={style.card} style={{ position: "relative" }}>
               <p>{schedule.day}</p>
-              <p>ON : {schedule.onTime}</p>
-              <p>OFF : {schedule.offTime}</p>
+              <p>ON : {schedule.on_time}</p>
+              <p>OFF : {schedule.off_time}</p>
 
               <div style={{ position: "absolute", top: "10px", right: "10px" }}>
                 <button
                   onClick={() =>
-                    setOpenMenuId(openMenuId === schedule.id ? null : schedule.id)
+                    setOpenMenuId(openMenuId === schedule.tid ? null : schedule.tid)
                   }
                   style={{
                     background: "none",
@@ -136,7 +141,7 @@ const PumpAuto = ({ data, onClose }) => {
                   ⋮
                 </button>
 
-                {openMenuId === schedule.id && (
+                {openMenuId === schedule.tid && (
                   <div
                     style={{
                       position: "absolute",
@@ -168,7 +173,7 @@ const PumpAuto = ({ data, onClose }) => {
                     </button>
                     <button
                       onClick={() => {
-                        handleDelete(schedule.id);
+                        handleDelete(schedule.tid);
                         setOpenMenuId(null);
                       }}
                       style={{
@@ -213,8 +218,8 @@ const PumpAuto = ({ data, onClose }) => {
             <label>เวลาเปิด:</label>
             <input
               type="time"
-              name="onTime"
-              value={formData.onTime}
+              name="on_time"
+              value={formData.on_time}
               onChange={handleChange}
               required
             />
@@ -222,8 +227,8 @@ const PumpAuto = ({ data, onClose }) => {
             <label>เวลาปิด:</label>
             <input
               type="time"
-              name="offTime"
-              value={formData.offTime}
+              name="off_time"
+              value={formData.off_time}
               onChange={handleChange}
               required
             />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "../../components/sidebar/Sidebar";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -7,19 +7,19 @@ import "./manageAdmin.css";
 
 function ManageAdmin() {
   const [users, setUsers] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]); // เพิ่มการกรองข้อมูล
-  const [selectedUser, setSelectedUser] = useState(null); // เก็บข้อมูลผู้ใช้ที่ต้องการแก้ไข
+  const [filteredUsers, setFilteredUsers] = useState([]); 
+  const [selectedUser, setSelectedUser] = useState(null); 
   const [modalEditUser, setModalEditUser] = useState(false); 
   const [modalCreateUser, setmodalCreateUser] = useState(false); 
 
   // ดึงข้อมูลผู้ใช้ทั้งหมด
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3300/api/users/getUser");
-      if (response.data.success) {
-        setUsers(response.data.users);
-        
-        setFilteredUsers(response.data.users); 
+      const response = await axios.get("http://localhost:3300/api/getUserAll");
+
+      if (Array.isArray(response.data)) {
+        setUsers(response.data);
+        setFilteredUsers(response.data); 
       } else {
         console.error("Error fetching users:", response.data.message);
       }
@@ -37,7 +37,7 @@ function ManageAdmin() {
     if (user_status === null) {
       setFilteredUsers(users); 
     } else {
-      setFilteredUsers(users.filter((user) => user.user_status === user_status)); 
+      setFilteredUsers(users.filter((user) => Number(user.user_status) === user_status)); 
     }
   };
 
@@ -68,10 +68,7 @@ function ManageAdmin() {
     }
 
     try {
-      const response = await axios.put(
-        `http://localhost:3300/api/users/updateUser/${selectedUser.uid}`,
-        selectedUser 
-      );
+      const response = await axios.put(`http://localhost:3300/api/upDateUserByRoot/${selectedUser.uid}`, selectedUser );
       toast.success(response.data.message);
 
       fetchUsers();
@@ -85,15 +82,13 @@ function ManageAdmin() {
   // ฟังก์ชันสำหรับลบข้อมูลผู้ใช้
   const deleteUser = async (uid) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
-    console.log(`uidDelete:`,uid);
+    // console.log(`uidDelete:`,uid);
     
     try {
-      const response = await axios.delete(
-        `http://localhost:3300/api/users/deleteUser/${uid}`
-      );
+      const response = await axios.delete(`http://localhost:3300/api/deleteUser/${uid}`);
       toast.success(response.data.message);
-
       fetchUsers();
+
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -121,19 +116,18 @@ function ManageAdmin() {
     }
 
     try {
-      const response = await axios.post("http://localhost:3300/api/users/signUpByRoot", {
+      const response = await axios.post("http://localhost:3300/api/signUpByRoot", {
         user_name: user_name,
         phone: phone,
         email: email,
         password: password, 
         user_status: user_status,
       });
-
+      
       toast.success(response.data.message);
-
       fetchUsers();
-
       closeAddModal();
+
     } catch (error) {
       console.error("Error creating user:", error);
       toast.error(error.response?.data?.message || "Failed to create user.");
@@ -194,7 +188,7 @@ function ManageAdmin() {
                     <strong>Phone:</strong> {user.phone}
                   </p>
                   <p>
-                    <strong>Status:</strong> {user.user_status === 1 ? "Admin" : "General"}
+                    <strong>Status:</strong> {user.user_status === "1" ? "Admin" : "General"}
                   </p>
                 </div>
               ))

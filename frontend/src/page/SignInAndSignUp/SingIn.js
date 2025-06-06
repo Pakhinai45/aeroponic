@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import style from "./signInAndSignUp.module.css";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useAuth } from "../../AuthContext.js";
+// import { useAuth } from "../../AuthContext.js";
 import axios from "axios";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, IconButton, TextField, CircularProgress } from '@mui/material';
 import { Close } from '@mui/icons-material';
@@ -15,7 +15,7 @@ function SignInForm() {
     password: ""
   });
 
-  const { setUid } = useAuth();
+  // const { setUid } = useAuth();
   const [openDialog, setOpenDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);  
 
@@ -29,16 +29,16 @@ function SignInForm() {
     setIsLoading(true);  
 
     try {
-      const response = await axios.post("http://localhost:3300/api/users/login", {
+      const response = await axios.post("http://localhost:3300/api/logIn", {
         email: formData.email,
         password: formData.password,
       });
 
       if (response.status === 200) {
-        console.log("User data:", response.data);
-        
-        setUid(response.data.uid);
-        localStorage.setItem("uid", response.data.uid);
+        console.log("User data:", response.data.token);
+        localStorage.setItem("token",response.data.token);
+        // setUid(response.data.uid);
+        // localStorage.setItem("uid", response.data.uid);
 
         window.location.href = "/dashboard";
       }

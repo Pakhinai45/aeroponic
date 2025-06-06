@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -46,15 +45,15 @@ const CustomGrid = ({ size, height, children, rowGap }) => (
 
 function Dashboard() {
   const [sensorList, setSensorList] = useState([]);
-  const [pid, setPid] = useState("");
+  const [sensorId, setSensorId] = useState("");
 
-  const [inputPid, setInputPid] = useState("");
+  const [inPutSensorId, setInPutSensorId] = useState("");
   const [inputName, setInputName] = useState("");
   const [inputVegName, setInputVegName] = useState("");
   const [inputLocation, setInputLocation] = useState("");
 
   const [sensorData, setSensorData] = useState(null);
-  const selectedSensor = sensorList.find(sensor => sensor.id === pid);
+  const selectedSensor = sensorList.find(sensor => sensor.sensor_id === sensorId);
 
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -66,82 +65,128 @@ function Dashboard() {
     setOpenDialog(false);
   };
 
-  //ดึงข้อมูลแท่งปลูก
   useEffect(() => {
-    axios.get("http://localhost:3300/sensor-pid")
-      .then(res => {
-        if (res.data.plant_beds && res.data.plant_beds.length > 0) {
-          setSensorList(res.data.plant_beds);
-          setPid(res.data.plant_beds[0].pid); 
+  const checkAuth = async () => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.post("http://localhost:3300/api/authen",{},{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      })
-      .catch(err => console.error("Error loading sensor list:", err));
-  }, []);
+      );
 
-  //ดึงข้อมูล sensor ตาม pid
-  useEffect(() => {
-    if (!pid) return;
+      if (response.data.status === "ok") {
+        // toast.success("Login Success",{toastId: "login-success"});
+      } else {
+        toast.error("Login failed",{toastId: "login-failed"});
+        setTimeout(() => {
+          localStorage.removeItem("token");
+          window.location.href = "/";
+        }, 4000);
+      }
+    } catch (err) {
+      toast.error("Authentication error",{toastId: "auth-error"});
+      setTimeout(() => {
+          window.location.href = "/";
+        }, 4000);
+    }
+  };
 
-    const fetchData = () => {
-      axios
-        .get(`http://localhost:3300/sensor/${pid}`)
-        .then((res) => {
-          if (res.data && res.data.pid === pid) {
-            setSensorData(res.data);
-          } else {
-            setSensorData(null);
-          }
-        })
-        .catch((err) => {
-          console.error("Error fetching data:", err);
-          setSensorData(null);
-        });
-    };
+  checkAuth();
+}, []);
+  
+//ดึงข้อมูลแท่งปลูก
+useEffect(() => {
+  const fetchSensorData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3300/sensor-pid");
+      if (response.data.length > 0) {
+        // console.log("plant:",response.data);
+        
+        setSensorList(response.data);
+        setSensorId(response.data[0].sensor_id);
+      }
+    } catch (error) {
+      console.error("Error fetching sensor data:", error);
+    }
+  };
 
-    fetchData();
-    const interval = setInterval(fetchData, 1000);
-    return () => clearInterval(interval);
-  }, [pid]);
+  fetchSensorData();
+}, []);
 
+//ดึงข้อมูล sensor ตาม id
+useEffect(() => {
+  if (!sensorId) return;
 
-  // เพิ่ม sensorId ใหม่
-  const handleAddSensor = () => {
-    if (!inputPid.trim() || !inputName.trim() || !inputVegName.trim() || !inputLocation.trim()) {
-      toast.warn(`Please fill in all information completely.`,{theme:"colored"});
-      return;
+  const fetchData = async () => {
+
+    try {
+      const response = await axios.get(`http://localhost:3300/sensor/${sensorId}`);
+      // console.log("data is:",response.data);
+      
+      if (response.data && response.data.sensor_id === sensorId) {
+        const matchedSensor = sensorList.find(sensor => sensor.sensor_id === sensorId);
+        const dataWithPid = {
+        ...response.data,
+        pid: matchedSensor?.pid || null,
+      };
+        setSensorData(dataWithPid);
+      } else {
+        setSensorData(null);
+      }
+    } catch (error) {
+      console.error("Error fetching sensor data:", error);
+      setSensorData(null);
     }
 
-    axios.post("http://localhost:3300/sensor-pid", { 
-      pid: inputPid,
-      beds_name : inputName,
+  };
+
+  fetchData(); // เรียกทันทีตอนโหลด
+
+  const interval = setInterval(fetchData, 1000); 
+  return () => clearInterval(interval); // clear interval pid เปลี่ยน
+}, [sensorId,sensorList]);
+
+
+// เพิ่ม sensorId ใหม่
+const handleAddSensor = async () => {
+
+  if (!inPutSensorId.trim() || !inputName.trim() || !inputVegName.trim() || !inputLocation.trim()) {
+    toast.warn(`Please fill in all information completely.`,{theme:"colored"});
+    return;
+  }
+  try {
+    await axios.post("http://localhost:3300/sensor-pid", { 
+      sensor_id: inPutSensorId,
+      bed_name : inputName,
       vegetableName : inputVegName,
       location : inputLocation,
-    })
-    .then(() => {
-      toast.success(`Save SensorId Successfuly`);
-      //โหลดรายการ sensor ใหม่จาก backend
-      return axios.get("http://localhost:3300/sensor-pid");
-    })
-    .then((res) => {
-      if (res.data.plant_beds && res.data.plant_beds.length > 0) {
-        setSensorList(res.data.plant_beds);
-        setPid(inputPid);
-        setInputPid("");
-        setInputName("");
-        setInputVegName("");
-        setInputLocation("");
-        closeAddSensor();
-      }
-    })
-    .catch(err => {
-      console.error("Error saving sensorId:", err);
-      if (err.response?.data?.error === "Sensor ID already exists") {
-        toast.warn(`This sensor ID is already used.`);
-      } else { 
-        toast.warn(`There is no Sensor ID in the system.`);
-      }
     });
-  };
+
+    toast.success(`Save SensorId Successfuly`);
+    const response = await axios.get("http://localhost:3300/sensor-pid");
+
+    if (response.data.length > 0) {
+      setSensorList(response.data);
+      setSensorId(inPutSensorId);
+      setInPutSensorId("");
+      setInputName("");
+      setInputVegName("");
+      setInputLocation("");
+      closeAddSensor();
+    }
+
+  } catch (error) {
+    console.error("Error saving sensorId:", error);
+    if (error.response?.data?.error === "Sensor ID already exists") {
+      toast.warn(`This sensor ID is already used.`);
+    } else { 
+      toast.warn(`There is no Sensor ID in the system.`);
+    }
+  }
+};
 
   return (
     <div className={style.grid}>
@@ -157,15 +202,15 @@ function Dashboard() {
             <div style={{ marginBottom: "1rem", marginTop: "1rem", width: 250 }}>
               <Autocomplete
                 options={sensorList}
-                getOptionLabel={(option) => option.beds_name}
+                getOptionLabel={(option) => option.bed_name}
                 value={selectedSensor || null}
                 onChange={(event, newValue) => {
-                  if (newValue) setPid(newValue.pid);
+                  if (newValue) setSensorId(newValue.sensor_id);
                 }}
                 renderOption={(props, option) => (
                   <li {...props} style={{ display: "flex", alignItems: "center", }}>
                     <FaSeedling style={{ marginRight: 8, color: "green" }} />
-                    {option.beds_name}
+                    {option.bed_name}
                   </li>
                 )}
                 renderInput={(params) => (
@@ -204,11 +249,11 @@ function Dashboard() {
 
           {selectedSensor && (
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginRight:"20px"}}>
-              <p><strong>ID :</strong> {selectedSensor.pid}</p>
-              <p><strong>Name :</strong> {selectedSensor.beds_name}</p>
-              <p><strong>Vegetable :</strong> {selectedSensor.vegetableName}</p>
+              <p><strong>ID :</strong> {selectedSensor.sensor_id}</p>
+              <p><strong>Name :</strong> {selectedSensor.bed_name}</p>
+              <p><strong>Vegetable :</strong> {selectedSensor.vegetable_name}</p>
               <p><strong>Location :</strong> {selectedSensor.location}</p>
-              <p><strong>Creation Date :</strong> {new Date(selectedSensor.createdAt).toLocaleString()}</p>
+              <p><strong>Creation Date :</strong> {new Date(selectedSensor.date).toLocaleString()}</p>
             </div>
           )}
 
@@ -234,11 +279,11 @@ function Dashboard() {
           </Box>
           <DialogContent>
             <TextField
-              label="SensorID(pid)"
+              label="SensorID"
               fullWidth
               type="text"
-              value={inputPid}
-              onChange={(e) => setInputPid(e.target.value)}
+              value={inPutSensorId}
+              onChange={(e) => setInPutSensorId(e.target.value)}
               sx={{mb:1}}
             />
             <TextField
@@ -305,7 +350,7 @@ function Dashboard() {
         </Dialog>
 
         {/* แสดงข้อมูล sensor */}
-        {pid && sensorData ? (
+        {sensorId && sensorData ? (
           <Box sx={{ flexGrow: 2 }}>
             <Grid container spacing={1} >
 

@@ -1,4 +1,4 @@
-import React , { useState } from "react";
+import { useState } from "react";
 import style from "./signInAndSignUp.module.css";
 
 import { toast } from "react-toastify";
@@ -10,7 +10,7 @@ import classNames from "classnames";
 
 function SignUpForm() {
   const [formData, setFormData] = useState({
-    name: "",
+    user_name: "",
     phone: "",
     email: "",
     password: "",
@@ -37,7 +37,7 @@ function SignUpForm() {
     // ตรวจสอบว่ามีช่องว่างหรือไม่
     for (const field in formData) {
       if (!formData[field]) {
-        toast.warn(`Please fill in the ${ field === 'name' ? 'Name' : field === 'phone' ? 'Phone' : 
+        toast.warn(`Please fill in the ${ field === 'user_name' ? 'Name' : field === 'phone' ? 'Phone' : 
                                           field === 'email' ? 'Email' : field === 'password' ? 'Password' : 'Confirm Password'} field.`, { theme: "colored" });
         return;
       }
@@ -63,12 +63,12 @@ function SignUpForm() {
   const handleConfirm = async () => {
     // ส่งข้อมูลไปยังเซิร์ฟเวอร์หลังจากยืนยัน
     try {
-      const response = await axios.post("http://localhost:3300/api/users/signUp", formData);
+      const response = await axios.post("http://localhost:3300/api/signUp", formData);
       console.log("Response:", response.data);
 
       if (response.status === 200) {
-        toast.success(response.data.message , { theme: "colored" });
-        setFormData({ name: "", phone: "", email: "", password: "", confirmPassword: "" });
+        toast.success("Insert Data Successfuly" , { theme: "colored" });
+        setFormData({ user_name: "", phone: "", email: "", password: "", confirmPassword: "" });
         closeConfirmSingup();
       } else {
         toast.error("❌" + (response.data.message || "Error"));
@@ -84,9 +84,9 @@ function SignUpForm() {
         <h1 className={style.texth1InUp}>Create Account</h1>
         <TextField
           type="text"
-          name="name"
+          name="user_name"
           fullWidth
-          value={formData.name}
+          value={formData.user_name}
           onChange={handleChange}
           label="Name"
           sx={{
@@ -180,7 +180,7 @@ function SignUpForm() {
           </IconButton>
         </Box>
         <DialogContent>
-          <Typography>Name: {formData.name}</Typography>
+          <Typography>Name: {formData.user_name}</Typography>
           <Typography>Phone: {formData.phone}</Typography>
           <Typography>Email: {formData.email}</Typography>
         </DialogContent>
